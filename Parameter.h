@@ -10,7 +10,7 @@ enum WriteMode {
 };
 
 class Parameter {
-private:
+public:
 	int dataWidth;			/* Number of bits per data, Uint: bit */
 	int dataWidthSegment;	/* Number of bits per data segment, Uint: bit */
 	WriteMode WMode;		/* Write mode */
@@ -25,23 +25,16 @@ private:
 							/* m-out-of-n code:  {m,n| Min(n), Min(m), C(n,m) > 2 ^ dataWidthSegment } */
 	
 	
-	int racetrackLength		/* NDR * N_DataSegment * dataSegmentLength + NSDR */
+	int racetrackLength;		/* NDR * N_DataSegment * dataSegmentLength + NSDR */
 	int NPR;				/* Number of Port per racetrack: */
 	int NSDR;				/* Number of spare domain per racetrack */
 
-	
-	
-public:
 
 	Parameter() {
-		DataWidth = 64;
-		DataWidthSegment = 8;
-		N_DataSegment = 8;
-
 	}
 	~Parameter();
-	void CalculateMOutOfN(int& m, int& n,)
-	ReadParameterFile();
+	//void CalculateMOutOfN(int& m, int& n,)
+	//ReadParameterFile();
 };
 
 #endif // !PARAMETER_H
