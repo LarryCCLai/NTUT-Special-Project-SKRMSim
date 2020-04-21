@@ -7,6 +7,7 @@
 #include <set>
 #include <fstream>
 #include <utility>
+
 enum WriteMode {
 	General,
 	Flip_N_Write,
@@ -17,42 +18,33 @@ enum WriteMode {
 
 class Config {
 private:
-	std::map<std::string, std::string> values;
 	std::string fileName;
-	//std::map<std::string, std::string> values;
-
-	/*
+	std::map<std::string, std::string> values;
 	std::set<std::string> warned;
-	std::ofstream debugLogFile;
-	*/
-	bool initialized;
+	//std::ofstream debugLogFile;
 public:
-	int dataWidth;			/* Number of bits per data, Uint: bit */
-	int dataWidthSegment;	/* Number of bits per data segment, Uint: bit */
-	WriteMode WMode;		/* Write mode */
-	int NDR;				/* Number of Data per racetrack */
-	
-	int N_DataSegment;		/* Number of data segments per data: dataWidth / dataWidthSegment */
-	int N_dataSegmentR;		/* Number of data segment per racetrack: NDR * N_DataSegment */
-
-	int dataSegmentLength;  /* dataSegmentLength: n (m-out-of-n), dataWidthSegment + 1 (flip-N-write) or dataWidthSegment (the others) */
-
-	int N_onesDataSegment;	/* Number of bits are one per DataSegment: m */
-							/* m-out-of-n code:  {m,n| Min(n), Min(m), C(n,m) > 2 ^ dataWidthSegment } */
-	
-	int racetrackLength;	/* NDR * N_DataSegment * dataSegmentLength + NSDR */
-	int NPR;				/* Number of Port per racetrack: */
-	int NSDR;				/* Number of spare domain per racetrack */
-
 
 	Config() {};
-	~Config();
+	~Config() {};
+	void Read(std::string filename);
+	std::string GetFileName();
+
+	bool KeyExists(std::string key);
 
 	uint64_t GetValueUL(std::string key);
+	void GetValueUL(std::string Key, uint64_t& value);
+
+	int  GetValue(std::string key);
+	void GetValue(std::string key, int& value);
+	void SetValue(std::string key, std::string value);
+
+	std::string GetString(std::string key);
+	void  GetString(std::string key, std::string& value);
+	void  SetString(std::string key, std::string);
+
+	void Print();
 
 	void CalculateMOutOfN(int& m, int& n);
-	void Read(std::string filename);
-	void Print();
 };
 
 #endif // !PARAMETER_H

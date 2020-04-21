@@ -1,7 +1,7 @@
 #include"Config.h"
 #include<cassert>
 #include<iostream>
-//#include<cstring>
+
 void Config::Read(std::string fileName) {
 	std::string line;
 	std::string subline;
@@ -40,8 +40,168 @@ void Config::Read(std::string fileName) {
 			std::string strParameterValue = subline.substr(pos + 1, subline.size() - 1);
 			values.insert(std::pair<std::string,std::string>(strParameterName, strParameterValue));
 		}
-		
 	}
+	else {
+		std::cout << "Could not read configuration file: "<< this->fileName << std::endl;
+		exit(1);
+	}
+}
+
+std::string Config::GetFileName() {
+	return this->fileName;
+}
+
+bool Config::KeyExists(std::string key) {
+	std::map<std::string, std::string>::iterator idx;
+
+	if (values.empty()) {
+		return false;
+	}
+
+	idx = values.find(key);
+
+	if (idx == values.end()) {
+		return false;
+	}
+
+	return true;
+}
+
+uint64_t Config::GetValueUL(std::string key) {
+	std::map<std::string, std::string>::iterator idx;
+	uint64_t value;
+	if (values.empty()) {
+		std::cerr << "Configuration has not been read yet." << std::endl;
+		return std::numeric_limits<uint64_t>::max();
+	}
+	idx = values.find(key);
+
+	if (!KeyExists(key) && !warned.count(key)){
+		std::cout << "Config: Warning: Key [" << key << "] is not set. Using '-1' as the default. Please configure this value if this is wrong." << std::endl;
+		warned.insert(key);
+	}
+
+	if (idx == values.end()) {
+		value = std::numeric_limits<uint64_t>::max();
+	}
+	else {
+		value = strtoul(idx->second.c_str(), NULL, 10);
+	}
+	return value;
+}
+
+void Config::GetValueUL(std::string key, uint64_t& value) {
+	std::map<std::string, std::string>::iterator idx;
+	if (values.empty()) {
+		std::cerr << "Configuration has not been read yet." << std::endl;
+		value = std::numeric_limits<uint64_t>::max();
+	}
+	idx = values.find(key);
+
+	if (!KeyExists(key) && !warned.count(key)) {
+		std::cout << "Config: Warning: Key [" << key << "] is not set. Using '-1' as the default. Please configure this value if this is wrong." << std::endl;
+		warned.insert(key);
+	}
+
+	if (idx == values.end()) {
+		value = std::numeric_limits<uint64_t>::max();
+	}
+	else {
+		value = strtoul(idx->second.c_str(), NULL, 10);
+	}
+}
+
+int  Config::GetValue(std::string key) {
+	std::map<std::string, std::string>::iterator idx;
+	int value;
+	if (values.empty()) {
+		std::cerr << "Configuration has not been read yet." << std::endl;
+		return std::numeric_limits<uint64_t>::max();
+	}
+	idx = values.find(key);
+
+	if (!KeyExists(key) && !warned.count(key)) {
+		std::cout << "Config: Warning: Key [" << key << "] is not set. Using '-1' as the default. Please configure this value if this is wrong." << std::endl;
+		warned.insert(key);
+	}
+
+	if (idx == values.end()) {
+		value = std::numeric_limits<uint64_t>::max();
+	}
+	else {
+		value = strtoul(idx->second.c_str(), NULL, 10);
+	}
+	return value;
+}
+
+void Config::GetValue(std::string key, int& value) {
+	std::map<std::string, std::string>::iterator idx;
+	if (values.empty()) {
+		std::cerr << "Configuration has not been read yet." << std::endl;
+		value = std::numeric_limits<uint64_t>::max();
+	}
+	idx = values.find(key);
+
+	if (!KeyExists(key) && !warned.count(key)) {
+		std::cout << "Config: Warning: Key [" << key << "] is not set. Using '-1' as the default. Please configure this value if this is wrong." << std::endl;
+		warned.insert(key);
+	}
+
+	if (idx == values.end()) {
+		value = std::numeric_limits<uint64_t>::max();
+	}
+	else {
+		value = strtoul(idx->second.c_str(), NULL, 10);
+	}
+}
+
+void Config::SetValue(std::string key, std::string value) {
+	std::map<std::string, std::string>::iterator idx;
+
+	idx = values.find(key);
+
+	if (idx != values.end()) {
+		values.erase(idx);
+	}
+	values.insert(std::pair<std::string, std::string>(key, value));
+}
+
+std::string Config::GetString(std::string key) {
+	std::map<std::string, std::string>::iterator idx;
+	std::string value;
+	if (values.empty()) {
+		std::cerr << "Configuration has not been read yet." << std::endl;
+		return "";
+	}
+	idx = values.find(key);
+
+	if (!KeyExists(key) && !warned.count(key)) {
+		std::cout << "Config: Warning: Key [" << key << "] is not set. Using '-1' as the default. Please configure this value if this is wrong." << std::endl;
+		warned.insert(key);
+	}
+
+	if (idx == values.end()) {
+		value = "";
+	}
+	else {
+		value = idx->second;
+	}
+	return value;
+}
+
+void  Config::GetString(std::string key, std::string& value) {
+
+	if (!KeyExists(key) && !warned.count(key)) {
+		std::cout << "Config: Warning: Key [" << key << "] is not set. Using '-1' as the default. Please configure this value if this is wrong." << std::endl;
+		warned.insert(key);
+	}
+	else if (KeyExists(key)) {
+		value = GetString(key);
+	}
+}
+
+void  Config::SetString(std::string key, std::string value) {
+	values.insert(std::pair<std::string, std::string>(key, value));
 }
 
 void Config::Print() {
@@ -52,3 +212,4 @@ void Config::Print() {
 		std::cout << (idx->first) << " = " << (idx->second) << std::endl;
 	}
 }
+
