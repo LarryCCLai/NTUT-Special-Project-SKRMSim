@@ -1,6 +1,12 @@
-#ifndef PARAMETER_H
-#define PARAMETER_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
+#include <vector>
+#include <string>
+#include <map>
+#include <set>
+#include <fstream>
+#include <utility>
 enum WriteMode {
 	General,
 	Flip_N_Write,
@@ -9,7 +15,17 @@ enum WriteMode {
 	M_out_of_N_Write
 };
 
-class Parameter {
+class Config {
+private:
+	std::map<std::string, std::string> values;
+	std::string fileName;
+	//std::map<std::string, std::string> values;
+
+	/*
+	std::set<std::string> warned;
+	std::ofstream debugLogFile;
+	*/
+	bool initialized;
 public:
 	int dataWidth;			/* Number of bits per data, Uint: bit */
 	int dataWidthSegment;	/* Number of bits per data segment, Uint: bit */
@@ -24,17 +40,19 @@ public:
 	int N_onesDataSegment;	/* Number of bits are one per DataSegment: m */
 							/* m-out-of-n code:  {m,n| Min(n), Min(m), C(n,m) > 2 ^ dataWidthSegment } */
 	
-	
-	int racetrackLength;		/* NDR * N_DataSegment * dataSegmentLength + NSDR */
+	int racetrackLength;	/* NDR * N_DataSegment * dataSegmentLength + NSDR */
 	int NPR;				/* Number of Port per racetrack: */
 	int NSDR;				/* Number of spare domain per racetrack */
 
 
-	Parameter() {
-	}
-	~Parameter();
-	//void CalculateMOutOfN(int& m, int& n,)
-	//ReadParameterFile();
+	Config() {};
+	~Config();
+
+	uint64_t GetValueUL(std::string key);
+
+	void CalculateMOutOfN(int& m, int& n);
+	void Read(std::string filename);
+	void Print();
 };
 
 #endif // !PARAMETER_H
