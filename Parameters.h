@@ -12,9 +12,11 @@ public:
 	void CalculateMOutOfN(int&, int&);
 	void Print();
 
+
+	int N_racetrack;		/* Number of tracks */
 	int dataWidth;			/* Number of bits per data, Uint: bit */
 	int dataWidthSegment;	/* Number of bits per data segment, Uint: bit */
-	WriteMode writeMode;		/* Write mode */
+	std::string writeMode;		/* Write mode */
 	int NDR;				/* Number of Data per racetrack */
 
 	int N_DataSegment;		/* Number of data segments per data: dataWidth / dataWidthSegment */
