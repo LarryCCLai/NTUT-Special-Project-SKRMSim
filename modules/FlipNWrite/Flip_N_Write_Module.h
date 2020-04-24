@@ -8,6 +8,9 @@ public:
 	void Initialize(Config* config);
 	uint64_t Read(Request* request);
 	void Write(Request* request);
+
+private:
+	int HammingDistance(uint64_t oldData, int oldFlip, uint64_t newData, int newFlip);
 };
 
 #endif // !FLIP_N_WRITE_MODULE_H
