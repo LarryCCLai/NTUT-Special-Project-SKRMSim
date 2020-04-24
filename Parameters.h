@@ -7,7 +7,7 @@ private:
 	std::map<int, std::pair<int, int>> M_N_Table;
 public:
 	Parameters();
-	~Parameters();
+	~Parameters() {};
 	void SetParams(Config* c);
 	void CalculateMOutOfN(int&, int&);
 	void Print();

@@ -40,7 +40,7 @@ void Parameters::SetParams(Config* c) {
 		this->dataSegmentLength = dataWidthSegment + 1;
 		this->N_onesDataSegment = NULL;
 	}
-	else if (this->writeMode == "Permutation_Write" || this->writeMode == "DCW" || this->writeMode == "General") {
+	else if (this->writeMode == "Permutation_Write" || this->writeMode == "DCW" || this->writeMode == "Naive") {
 		this->dataSegmentLength = dataWidthSegment;
 		this->N_onesDataSegment = NULL;
 	}

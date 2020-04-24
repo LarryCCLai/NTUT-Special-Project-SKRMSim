@@ -9,7 +9,7 @@
 #include <utility>
 
 enum WriteMode {
-	General,
+	Naive,
 	Flip_N_Write,
 	DCW,
 	Permutation_Write,

@@ -13,6 +13,11 @@ M_Out_Of_N_Module::M_Out_Of_N_Module() {
 	this->params = nullptr;
 }
 
+M_Out_Of_N_Module::~M_Out_Of_N_Module() {
+	delete[]track;
+	delete params;
+}
+
 void M_Out_Of_N_Module::Initialize(Config* config) {
 	if (!this->initialized) {
 		this->params = new Parameters();
@@ -25,9 +30,6 @@ void M_Out_Of_N_Module::Initialize(Config* config) {
 	}
 }
 
-M_Out_Of_N_Module::~M_Out_Of_N_Module() {
-}
-
 uint64_t M_Out_Of_N_Module::Read(Request* request) {
 	int startPN = (request->dataIdx + 1) * params->N_DataSegment - 1;
 	int endPN = request->dataIdx * params->N_DataSegment;
@@ -38,7 +40,7 @@ uint64_t M_Out_Of_N_Module::Read(Request* request) {
 	for (int PN = startPN; PN >= endPN; PN--) {
 		for (int i = params->dataSegmentLength - 1; i >= 0; i--) {
 			MOutOfNCode[i] = this->track[request->trackIdx].Read(PN);
-			this->track->Shift(R);
+			this->track[request->trackIdx].Shift(R);
 		}
 		int* dataPatition = ToBinary(this->Decode(MOutOfNCode, params->dataSegmentLength, params->N_onesDataSegment), params->dataWidthSegment);
 		
@@ -47,7 +49,7 @@ uint64_t M_Out_Of_N_Module::Read(Request* request) {
 		}
 		
 		for (int i = 0; i < params->dataSegmentLength; i++) {
-			this->track->Shift(L);
+			this->track[request->trackIdx].Shift(L);
 		}
 	}
 	data = this->ToDecimal(binaryData, params->dataWidth);
@@ -67,7 +69,7 @@ void M_Out_Of_N_Module::Write(Request* request) {
 		for (int i = 0; i < params->dataSegmentLength; i++) {
 			this->detect++;
 			if (this->track[request->trackIdx].Read(PN) == 1) {
-				this->track->Shift(R);
+				this->track[request->trackIdx].Shift(R);
 				this->shift++;
 			}
 			else {
