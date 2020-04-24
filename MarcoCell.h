@@ -1,20 +1,17 @@
 #ifndef MARCOCELL_H
 #define MARCOCELL_H
-#include"Domain.h"
 #include"AccessPort.h"
-#include"Parameter.h"
+#include"Parameters.h"
 class MarcoCell{
 private:
-	Domain* bits;
+	int* bits;
 	AccessPort* ports;
-	int NPR, NBR, NSDR;
+	int NDR, NPR, NSDR, racetrackLength, dataSegmentLength;
 	bool initialized;
 public:
 	MarcoCell();
-
 	~MarcoCell();
-
-	void Initialize(Parameter* p);
+	void Initialize(Parameters* p);
 	void Information();
 	
 	void Shift(bool dir); //dir: true = righr, false = left;
