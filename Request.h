@@ -12,11 +12,12 @@ class Request {
 private:
 
 public:
+	char operation;
 	uint64_t trackIdx;
 	int dataIdx;
 	uint64_t data;
 	Request();
-	Request(int trackIdx, int dataIdx, uint64_t data);
+	Request(char operation, int trackIdx, int dataIdx, uint64_t data);
 	~Request ();
 };
 

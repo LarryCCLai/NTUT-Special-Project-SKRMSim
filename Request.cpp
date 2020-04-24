@@ -3,11 +3,14 @@
 #include<iostream>
 
 Request::Request() {
+	this->operation = 'R';
 	this->trackIdx = -1;
 	this->dataIdx = -1;
+	this->data = -1;
 }
 
-Request::Request(int trackIdx, int dataIdx, uint64_t data) {
+Request::Request(char operation, int trackIdx, int dataIdx, uint64_t data) {
+	this->operation = operation;
 	this->trackIdx = trackIdx;
 	this->dataIdx = dataIdx;
 	this->data = data;
