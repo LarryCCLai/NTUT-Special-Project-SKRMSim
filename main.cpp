@@ -3,6 +3,8 @@
 #include"Request.h"
 #include<iostream>
 #include "modules/MOutOfN/MOutOfNModule.h"
+#include "modules/Naive/Naive_Module.h"
+
 int* ToBinary(uint64_t num, int Nbits) {
 	int* res = new int[Nbits];
 	int idx = Nbits - 1;
@@ -15,22 +17,24 @@ int* ToBinary(uint64_t num, int Nbits) {
 	}
 	return res;
 }
+
 int main() {
 	Config* c = new Config();
-	Request* request = new Request('W',0,0,63);
+	Request* request = new Request('W',0,0,152);
 	c->Read("config.txt");
 	c->Print();
 	std::cout << "\n";
 	Parameters* params = new Parameters();
 	params->SetParams(c);
 	params->Print();
+	std::cout << "\n";
 	MarcoCell* track = new MarcoCell();
 	//track->Initialize(params);
 	//track->Print();
-	M_Out_Of_N_Module* m = new M_Out_Of_N_Module();
+	Naive_Module* m = new Naive_Module();
 	m->Initialize(c);
 	m->Write(request);
-	std::cout<<m->Read(request);
+	m->Print();
 	std::cout << m->Read(request);
 	
 	//RequestQueue* r = new RequestQueue();

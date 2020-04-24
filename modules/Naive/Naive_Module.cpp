@@ -66,7 +66,6 @@ void Naive_Module::Write(Request* request) {
 			if (data[i] == 1) {
 				this->injection++;
 			}
-			this->track[request->trackIdx].Print();
 		}
 	}
 	delete[]data;
