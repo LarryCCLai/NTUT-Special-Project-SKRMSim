@@ -3,14 +3,15 @@
 #include"../module.h"
 
 class M_Out_Of_N_Module: public Module {
-
 public:
 	M_Out_Of_N_Module();
 	~M_Out_Of_N_Module();
-	uint64_t Read(Request*);
-    uint64_t Write(Request*);
-
-
+	void Initialize(Config* config);
+	uint64_t Read(Request* request);
+	void Write(Request* request);
+	void Access(Request* request);
+	int* Encode(uint64_t data, int n, int m);
+	uint64_t Decode(int* MOutOfNCode, int n, int m);
 };
 
 #endif // !M_OUT_OF_N
