@@ -9,7 +9,6 @@ public:
 	void Initialize(Config* config);
 	uint64_t Read(Request* request);
 	void Write(Request* request);
-	void Access(Request* request);
 	int* Encode(uint64_t data, int n, int m);
 	uint64_t Decode(int* MOutOfNCode, int n, int m);
 };

@@ -26,59 +26,72 @@ void M_Out_Of_N_Module::Initialize(Config* config) {
 }
 
 M_Out_Of_N_Module::~M_Out_Of_N_Module() {
-
 }
 
 uint64_t M_Out_Of_N_Module::Read(Request* request) {
-	return 0;
-
+	int startPN = (request->dataIdx + 1) * params->N_DataSegment - 1;
+	int endPN = request->dataIdx * params->N_DataSegment;
+	int* MOutOfNCode = new int[params->dataSegmentLength];
+	int* binaryData = new int[params->dataWidth];
+	int dataIdx = params->dataWidth - 1;
+	uint64_t data = 0;
+	for (int PN = startPN; PN >= endPN; PN--) {
+		for (int i = params->dataSegmentLength - 1; i >= 0; i--) {
+			MOutOfNCode[i] = this->track[request->trackIdx].Read(PN);
+			this->track->Shift(R);
+		}
+		int* dataPatition = ToBinary(this->Decode(MOutOfNCode, params->dataSegmentLength, params->N_onesDataSegment), params->dataWidthSegment);
+		
+		for (int i = params->dataWidthSegment - 1; i >= 0; i--) {
+			binaryData[dataIdx--] = dataPatition[i];
+		}
+		
+		for (int i = 0; i < params->dataSegmentLength; i++) {
+			this->track->Shift(L);
+		}
+	}
+	data = this->ToDecimal(binaryData, params->dataWidth);
+	delete[]MOutOfNCode;
+	delete[]binaryData;
+	return data;
 }
 
 void M_Out_Of_N_Module::Write(Request* request) {
-	track[request->trackIdx].Print();
-	std::cout << "\n";
 	int startPN = (request->dataIdx + 1) * params->N_DataSegment - 1;
-	int EndPN = request->dataIdx * params->N_DataSegment;
+	int endPN = request->dataIdx * params->N_DataSegment;
 	uint64_t sampling = 0;
 	for (int i = 0; i < params->dataWidthSegment; i++) {
 		sampling = (sampling << 1) | 1;
 	}
-	for (int PN = startPN; PN != EndPN; PN--) {
+	for (int PN = startPN; PN >= endPN; PN--) {
 		for (int i = 0; i < params->dataSegmentLength; i++) {
-			//this->detect++;
+			this->detect++;
 			if (this->track[request->trackIdx].Read(PN) == 1) {
-				//this->shift++;
 				this->track->Shift(R);
+				this->shift++;
 			}
 			else {
-				//this->shift++;
 				this->track[request->trackIdx].Delete_SHR(PN);
+				this->shift++;
 			}
 		}
 		uint64_t dataS = (sampling & request->data) >> ((startPN - PN) * params->dataWidthSegment);
 		int* MOutOfNCode = this->Encode(dataS, params->dataSegmentLength, params->N_onesDataSegment);
 		for (int i = 0; i < params->dataSegmentLength; i++) {
 			if (MOutOfNCode[i] == 1) {
-				//this->shift++;
 				this->track[request->trackIdx].Shift(L);
+				this->shift++;
 			}
 			else {
-				//this->shift++;
 				this->track[request->trackIdx].Insert_SHL(PN, 0);
+				this->shift++;
 			}
 		}
-		for (int j = 0; j < params->dataSegmentLength; j++) {
-			std::cout << MOutOfNCode[j];
-		}
-		std::cout << " ";
 		sampling = sampling << params->dataWidthSegment;
 		delete[]MOutOfNCode;
 	}
 }
 
-void M_Out_Of_N_Module::Access(Request* request) {
-
-}
 
 int* M_Out_Of_N_Module::Encode(uint64_t data, int n, int m) {
 	int* nums = new int[n];
@@ -110,6 +123,5 @@ uint64_t M_Out_Of_N_Module::Decode(int* MOutOfNCode, int n, int m) {
 		res++;
 	}
 	delete[]nums;
-	delete[]MOutOfNCode;
 	return res;
 }

@@ -19,10 +19,10 @@ public:
 	virtual ~Module() {};
 
 	virtual void Initialize(Config*) = 0;
-	virtual void Access(Request*) = 0;
 	virtual uint64_t Read(Request* ) = 0;
 	virtual void Write(Request* ) = 0;
 
+	
 	int* ToBinary(uint64_t num, int Nbits);
 	uint64_t ToDecimal(int* num, int Nbits);
 	uint64_t GetInjection();
