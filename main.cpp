@@ -4,7 +4,7 @@
 #include<iostream>
 #include "modules/MOutOfN/MOutOfNModule.h"
 #include "modules/Naive/Naive_Module.h"
-
+#include "modules/DCW/DCW_Module.h"
 int* ToBinary(uint64_t num, int Nbits) {
 	int* res = new int[Nbits];
 	int idx = Nbits - 1;
@@ -20,7 +20,7 @@ int* ToBinary(uint64_t num, int Nbits) {
 
 int main() {
 	Config* c = new Config();
-	Request* request = new Request('W',0,0,152);
+	Request* request = new Request('W',0,0,1);
 	c->Read("config.txt");
 	c->Print();
 	std::cout << "\n";
@@ -31,8 +31,11 @@ int main() {
 	MarcoCell* track = new MarcoCell();
 	//track->Initialize(params);
 	//track->Print();
-	Naive_Module* m = new Naive_Module();
+	auto* m = new DCW_Module();
 	m->Initialize(c);
+	request = new Request('W', 0, 0, 63);
+	m->Write(request);
+	request = new Request('W', 0, 1, 152);
 	m->Write(request);
 	m->Print();
 	std::cout << m->Read(request);
