@@ -1,5 +1,6 @@
 #include"Naive_Module.h"
-
+#define R true
+#define L false
 Naive_Module::Naive_Module() {
 	this->injection = 0;
 	this->remove = 0;
@@ -29,10 +30,44 @@ void Naive_Module::Initialize(Config* config) {
 }
 
 uint64_t Naive_Module::Read(Request* request) {
-
+	int startPN = (request->dataIdx + 1) * params->N_DataSegment - 1;
+	int endPN = request->dataIdx * params->N_DataSegment;
+	int* binaryData = new int[params->dataSegmentLength];
+	for (int PN = startPN; PN >= endPN; PN--) {
+		for (int i = params->dataSegmentLength - 1; i >= 0; i--) {
+			binaryData[i] = this->track[request->trackIdx].Read(PN);
+			this->detect++;
+			this->track[request->trackIdx].Shift(R);
+			this->shift++;
+		}
+		for (int i = params->dataSegmentLength - 1; i >= 0; i--) {
+			this->track[request->trackIdx].Shift(L);
+			this->shift++;
+		}
+	}
+	uint64_t data = this->ToDecimal(binaryData, params->dataWidth);
+	delete[]binaryData;
+	return data;
 }
 
 void Naive_Module::Write(Request* request) {
 	int startPN = (request->dataIdx + 1) * params->N_DataSegment - 1;
 	int endPN = request->dataIdx * params->N_DataSegment;
+	int* data = this->ToBinary(request->data, params->dataSegmentLength);
+	for (int PN = startPN; PN >= endPN; PN--) {
+		for (int i = params->dataSegmentLength - 1; i >= 0; i--) {
+			this->track[request->trackIdx].Delete_SHR(PN);
+			this->shift++;
+			this->remove++;
+		}
+		for (int i = 0; i < params->dataSegmentLength; i++) {
+			this->track[request->trackIdx].Insert_SHL(PN, data[i]);
+			this->shift++;
+			if (data[i] == 1) {
+				this->injection++;
+			}
+			this->track[request->trackIdx].Print();
+		}
+	}
+	delete[]data;
 }
