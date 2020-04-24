@@ -9,7 +9,7 @@ Parameters::Parameters() {
 	
 	this->dataWidth = 64;
 	this->dataWidthSegment = 16;
-	this->writeMode = WriteMode::M_out_of_N_Write;
+	this->writeMode = "M_Out_Of_N_Write";
 	this->NDR = 1;
 	
 	this->N_DataSegment = this->dataWidth / this->dataWidthSegment;
@@ -32,7 +32,7 @@ void Parameters::SetParams(Config* c) {
 
 	this->N_DataSegment = this->dataWidth / this->dataWidthSegment;
 	this->N_dataSegmentR = this->NDR * this->N_DataSegment;
-	if (this->writeMode == "M_out_of_N_Write") {
+	if (this->writeMode == "M_Out_Of_N_Write") {
 		this->dataSegmentLength = M_N_Table[dataWidthSegment].first;
 		this->N_onesDataSegment = M_N_Table[dataWidthSegment].second;
 	}
