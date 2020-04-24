@@ -19,8 +19,8 @@ public:
 	void Write(int PN, int data);
 	void Insert_SHR(int PN, int data);
 	void Insert_SHL(int PN, int data);
-	void Delete_SHR(int PN, int data);
-	void Delete_SHL(int PN, int data);
+	void Delete_SHR(int PN);
+	void Delete_SHL(int PN);
 	void RandomUpdate(int PN, int data);
 };
 

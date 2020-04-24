@@ -56,20 +56,15 @@ void MarcoCell::Print() {
 	std::cout << "NDR = " << this->NDR << std::endl;
 	std::cout << "NPR = " << this->NPR << std::endl;
 	std::cout << "NSDR = " << this->NSDR << std::endl;
-	
-
-	std::cout << "Domains: ";
+	std::cout << "Bits: ";
 	for (int i = 0; i < this->racetrackLength; i++) {
 		std::cout << this->bits[i] << " ";
 	}
-
 	std::cout << std::endl;
 	std::cout << "Ports: ";
 	for (int i = 0; i < this->NPR; i++) {
 		std::cout << this->ports[i].getAlign() << " ";
 	}
-
-	std::cout << std::endl;
 	std::cout << std::endl;
 }
 
@@ -110,13 +105,13 @@ void MarcoCell::Insert_SHL(int PN, int data) {
 	this->bits[this->ports[PN].getAlign()] = data;
 }
 
-void MarcoCell::Delete_SHR(int PN, int data) {
+void MarcoCell::Delete_SHR(int PN) {
 	for (int idx = this->ports[PN].getAlign(); idx >= 0; idx--) {
 		this->bits[idx] = this->bits[idx - 1];
 	}
 }
 
-void MarcoCell::Delete_SHL(int PN, int data) {
+void MarcoCell::Delete_SHL(int PN) {
 	for (int idx = this->ports[PN].getAlign(); idx < this->racetrackLength; idx++) {
 		this->bits[idx] = this->bits[idx + 1];
 	}
