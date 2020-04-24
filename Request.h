@@ -13,10 +13,10 @@ private:
 
 public:
 	uint64_t trackIdx;
-	int PN;
+	int dataIdx;
 	uint64_t data;
 	Request();
-	Request(int trackIdx, int PN, uint64_t data);
+	Request(int trackIdx, int dataIdx, uint64_t data);
 	~Request ();
 };
 

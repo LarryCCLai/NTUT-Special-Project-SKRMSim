@@ -4,12 +4,12 @@
 
 Request::Request() {
 	this->trackIdx = -1;
-	this->PN = -1;
+	this->dataIdx = -1;
 }
 
-Request::Request(int trackIdx, int PN, uint64_t data) {
+Request::Request(int trackIdx, int dataIdx, uint64_t data) {
 	this->trackIdx = trackIdx;
-	this->PN = PN;
+	this->dataIdx = dataIdx;
 	this->data = data;
 }
 
@@ -68,7 +68,7 @@ void RequestQueue::Read(std::string fileName) {
 
 			pos = subline.find(" ");
 			assert(pos != std::string::npos);
-			request->PN = std::stoi(subline.substr(0, pos), &sz, 0);
+			request->dataIdx = std::stoi(subline.substr(0, pos), &sz, 0);
 			subline = subline.substr(sz+1);
 
 			pos = subline.find(" ");
