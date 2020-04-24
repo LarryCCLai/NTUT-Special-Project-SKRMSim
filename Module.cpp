@@ -1,6 +1,13 @@
 #include"modules/Module.h"
-
+#include<iostream>
 Module::Module() {
+}
+
+void Module::Print() {
+	std::cout << "shift = " << this->shift << std::endl;
+	std::cout << "injection = " << this->injection << std::endl;
+	std::cout << "detect = " << this->detect << std::endl;
+	std::cout << "remove = " << this->remove << std::endl;
 }
 
 int* Module::ToBinary(uint64_t num, int Nbits) {
