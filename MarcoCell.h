@@ -12,7 +12,7 @@ public:
 	MarcoCell();
 	~MarcoCell();
 	void Initialize(Parameters* p);
-	void Information();
+	void Print();
 	
 	void Shift(bool dir); //dir: true = righr, false = left;
 	int Read(int portNumber);
