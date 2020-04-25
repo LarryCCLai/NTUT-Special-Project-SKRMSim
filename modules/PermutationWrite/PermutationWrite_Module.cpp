@@ -35,15 +35,15 @@ void PermutationWrite_Module::Initialize(Config* config) {
 uint64_t PermutationWrite_Module::Read(Request* request) {
 	int startPN = (request->dataIdx + 1) * params->N_DataSegment - 1;
 	int endPN = request->dataIdx * params->N_DataSegment;
-	int* binaryData = new int[params->dataSegmentLength];
+	int* binaryData = new int[params->dataWidthSegment];
 	for (int PN = startPN; PN >= endPN; PN--) {
-		for (int i = params->dataSegmentLength - 1; i >= 0; i--) {
+		for (int i = params->dataWidthSegment - 1; i >= 0; i--) {
 			binaryData[i] = this->track[request->trackIdx].Read(PN);
 			this->detect++;
 			this->track[request->trackIdx].Shift(R);
 			this->shift++;
 		}
-		for (int i = params->dataSegmentLength - 1; i >= 0; i--) {
+		for (int i = params->dataWidthSegment - 1; i >= 0; i--) {
 			this->track[request->trackIdx].Shift(L);
 			this->shift++;
 		}
@@ -59,8 +59,6 @@ void PermutationWrite_Module::Write(Request* request) {
 	int* data = this->ToBinary(request->data, params->dataSegmentLength);
 	int skyCount = 0;
 	for (int PN = startPN; PN >= endPN; PN--) {
-		this->track[request->trackIdx].Shift(R);
-		this->shift++;
 		for (int i = params->dataSegmentLength - 1; i >= 0; i--) {
 			this->detect++;
 			if (this->track[request->trackIdx].Read(PN) == 0) {
@@ -73,7 +71,6 @@ void PermutationWrite_Module::Write(Request* request) {
 				skyCount++;
 			}
 		}
-
 		for (int i = 0; i < params->dataSegmentLength; i++) {
 			if (data[i] == 0) {
 				this->track[request->trackIdx].Insert_SHL(PN, 0);
@@ -91,9 +88,10 @@ void PermutationWrite_Module::Write(Request* request) {
 					this->shift++;
 				}
 			}
+			if (i == params->dataSegmentLength - 1 && data[i] == 0) {
+				skyCount++;
+			}
 		}
-		this->track[request->trackIdx].Shift(L);
-		this->shift++;
 		while (skyCount > 0) {
 			this->track[request->trackIdx].Delete_SHL(PN);
 			this->shift++;
