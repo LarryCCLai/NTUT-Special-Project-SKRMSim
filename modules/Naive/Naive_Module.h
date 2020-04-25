@@ -5,7 +5,6 @@ class Naive_Module: public Module {
 public:
 	Naive_Module();
 	~Naive_Module();
-	void Initialize(Config* config);
 	uint64_t Read(Request* request);
 	void Write(Request* request);
 };

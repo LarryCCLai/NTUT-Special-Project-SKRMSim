@@ -12,12 +12,12 @@ class Request {
 private:
 
 public:
-	char operation;
+	std::string operation;
 	uint64_t trackIdx;
 	int dataIdx;
 	uint64_t data;
 	Request();
-	Request(char operation, int trackIdx, int dataIdx, uint64_t data);
+	Request(std::string operation, int trackIdx, int dataIdx, uint64_t data);
 	~Request ();
 };
 

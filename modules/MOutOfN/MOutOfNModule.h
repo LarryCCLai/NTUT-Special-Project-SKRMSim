@@ -6,7 +6,6 @@ class M_Out_Of_N_Module: public Module {
 public:
 	M_Out_Of_N_Module();
 	~M_Out_Of_N_Module();
-	void Initialize(Config* config);
 	uint64_t Read(Request* request);
 	void Write(Request* request);
 	int* Encode(uint64_t data, int n, int m);

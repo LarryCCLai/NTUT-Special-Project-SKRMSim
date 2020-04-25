@@ -3,13 +3,13 @@
 #include<iostream>
 
 Request::Request() {
-	this->operation = 'R';
+	this->operation = "R";
 	this->trackIdx = -1;
 	this->dataIdx = -1;
 	this->data = -1;
 }
 
-Request::Request(char operation, int trackIdx, int dataIdx, uint64_t data) {
+Request::Request(std::string operation, int trackIdx, int dataIdx, uint64_t data) {
 	this->operation = operation;
 	this->trackIdx = trackIdx;
 	this->dataIdx = dataIdx;
@@ -64,6 +64,11 @@ void RequestQueue::Read(std::string fileName) {
 			
 			
 			std::string::size_type sz = 0;
+			pos = subline.find(" ");
+			assert(pos != std::string::npos);
+			request->operation = subline.substr(0, pos);
+			subline = subline.substr(pos + 1, subline.size());
+
 			pos = subline.find(" ");
 			assert(pos != std::string::npos);
 			request->trackIdx = std::stoull(subline.substr(0, pos), &sz, 0);

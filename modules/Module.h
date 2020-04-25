@@ -16,11 +16,13 @@ protected:
 	uint64_t detect;
 public:
 	Module();
+	
 	virtual ~Module() {};
-
-	virtual void Initialize(Config*) = 0;
-	virtual uint64_t Read(Request* ) = 0;
-	virtual void Write(Request* ) = 0;
+	virtual uint64_t Read(Request*) = 0;
+	virtual void Write(Request*) = 0;
+	
+	void Initialize(Parameters*);
+	
 	void Print();
 	
 	int* ToBinary(uint64_t num, int Nbits);

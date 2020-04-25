@@ -2,9 +2,7 @@
 #include"Parameters.h"
 #include"Request.h"
 #include<iostream>
-#include "modules/MOutOfN/MOutOfNModule.h"
-#include "modules/Naive/Naive_Module.h"
-#include "modules/DCW/DCW_Module.h"
+#include"modules/ModuleFactory.h"
 int* ToBinary(uint64_t num, int Nbits) {
 	int* res = new int[Nbits];
 	int idx = Nbits - 1;
@@ -18,44 +16,28 @@ int* ToBinary(uint64_t num, int Nbits) {
 	return res;
 }
 
-int main() {
-	Config* c = new Config();
-	Request* request = new Request('W',0,0,1);
-	c->Read("config.txt");
-	c->Print();
-	std::cout << "\n";
+int main(int argc, char* argv[]) {
+	Config* config = new Config();
 	Parameters* params = new Parameters();
-	params->SetParams(c);
-	params->Print();
-	std::cout << "\n";
-	MarcoCell* track = new MarcoCell();
-	//track->Initialize(params);
-	//track->Print();
-	auto* m = new DCW_Module();
-	m->Initialize(c);
-	request = new Request('W', 0, 0, 63);
-	m->Write(request);
-	request = new Request('W', 0, 1, 152);
-	m->Write(request);
-	m->Print();
-	std::cout << m->Read(request);
-	
-	//RequestQueue* r = new RequestQueue();
-	//r->Read("requests.txt");
-	/*Request* re = r->getNextRequest();
-	std::cout << re->trackIdx << " " << re->PN << " " << re->data << std::endl;
-	re = r->getNextRequest();
-	std::cout << re->trackIdx << " " << re->PN << " " << re->data << std::endl;
-	re = r->getNextRequest();
-	std::cout << re->trackIdx << " " << re->PN << " " << re->data << std::endl;
-	re = r->getNextRequest();*/
-	
-
-	/*Request* re = nullptr;
-	r->getNextRequest(&re);
-	std::cout << re->trackIdx << " " << re->PN << " " << re->data << std::endl;
-	r->getNextRequest(&re);
-	std::cout << re->trackIdx << " " << re->PN << " " << re->data << std::endl;
-	r->getNextRequest(&re);
-	std::cout << re->trackIdx << " " << re->PN << " " << re->data << std::endl;*/
+	RequestQueue* requests = new RequestQueue();
+	Module* module = nullptr;
+	config->Read("config.txt");
+	requests->Read("requests.txt");
+	//config->Read(argv[1]);
+	//requests->Read(argv[2]);
+	params->SetParams(config);	
+	module = ModuleFactory::CreateMoudule(params->writeMode);
+	module->Initialize(params);
+	while (true){
+		Request* request = requests->getNextRequest();
+		if (request == nullptr) {
+			break;
+		}
+		if (request->operation == "W")
+			module->Write(request);
+		else {
+			std::cout<<module->Read(request);
+		}
+	}
+	module->Print();
 }

@@ -1,6 +1,18 @@
 #include"modules/Module.h"
 #include<iostream>
+
 Module::Module() {
+}
+
+void Module::Initialize(Parameters* params) {
+	if (!this->initialized) {
+		this->params = params;
+		this->track = new MarcoCell[this->params->N_racetrack];
+		for (int i = 0; i < params->N_racetrack; i++) {
+			this->track[i].Initialize(params);
+		}
+		this->initialized = true;
+	}
 }
 
 void Module::Print() {
