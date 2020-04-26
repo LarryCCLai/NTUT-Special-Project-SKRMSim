@@ -1,7 +1,7 @@
 #include"Config.h"
 #include<cassert>
 #include<iostream>
-
+#include<limits>
 void Config::Read(std::string fileName) {
 	std::string line;
 	std::string subline;

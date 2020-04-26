@@ -1,5 +1,7 @@
-#include"Module.h"
 #include<iostream>
+#include<cmath>
+#include"Module.h"
+
 
 Module::Module() {
 }

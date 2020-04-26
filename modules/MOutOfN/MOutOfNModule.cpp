@@ -1,3 +1,5 @@
+#include<algorithm>
+#include<cmath>
 #include"MOutOfNModule.h"
 #define R true
 #define L false

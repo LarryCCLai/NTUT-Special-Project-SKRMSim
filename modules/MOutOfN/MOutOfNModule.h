@@ -1,6 +1,6 @@
 #ifndef M_OUT_OF_N
 #define M_OUT_OF_N
-#include"../module.h"
+#include"../Module.h"
 
 class M_Out_Of_N_Module: public Module {
 private:
