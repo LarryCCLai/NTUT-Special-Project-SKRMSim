@@ -21,7 +21,7 @@ public:
 	virtual uint64_t Read(Request*) = 0;
 	virtual void Write(Request*) = 0;
 	
-	void Initialize(Parameters*);
+	virtual void Initialize(Parameters*) = 0;
 	
 	void Print();
 	

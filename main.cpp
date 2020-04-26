@@ -3,6 +3,7 @@
 #include"Request.h"
 #include<iostream>
 #include"modules/ModuleFactory.h"
+#include"../Factory/Factory/generateRequestFile.h"
 int* ToBinary(uint64_t num, int Nbits) {
 	int* res = new int[Nbits];
 	int idx = Nbits - 1;
@@ -22,13 +23,14 @@ int main(int argc, char* argv[]) {
 	RequestQueue* requests = new RequestQueue();
 	Module* module = nullptr;
 	config->Read("config.txt");
-	requests->Read("requests.txt");
+	//requests->Read("requests.txt");
 	//config->Read(argv[1]);
 	//requests->Read(argv[2]);
 	params->SetParams(config);	
 	module = ModuleFactory::CreateMoudule(params->writeMode);
 	module->Initialize(params);
-	while (true){
+	
+	/*while (true){
 		Request* request = requests->getNextRequest();
 		if (request == nullptr) {
 			break;
@@ -38,6 +40,7 @@ int main(int argc, char* argv[]) {
 		else {
 			std::cout<<module->Read(request);
 		}
-	}
+	}*/
 	module->Print();
+	//GenerateRequestFile();
 }

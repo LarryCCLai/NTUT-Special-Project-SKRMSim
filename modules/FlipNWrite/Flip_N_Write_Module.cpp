@@ -19,6 +19,17 @@ Flip_N_Write_Module::~Flip_N_Write_Module() {
 	delete params;
 }
 
+void Flip_N_Write_Module::Initialize(Parameters* params) {
+	if (!this->initialized) {
+		this->params = params;
+		this->track = new MarcoCell[this->params->N_racetrack];
+		for (int i = 0; i < params->N_racetrack; i++) {
+			this->track[i].Initialize(params);
+		}
+		this->initialized = true;
+	}
+}
+
 int Flip_N_Write_Module::HammingDistance(uint64_t oldData, int oldFlip, uint64_t newData, int newFlip) {
 	uint64_t XOR = newData ^ oldData;
 	uint64_t count = 0;

@@ -13,6 +13,18 @@ M_Out_Of_N_Module::M_Out_Of_N_Module() {
 	this->params = nullptr;
 }
 
+void M_Out_Of_N_Module::Initialize(Parameters* params) {
+	if (!this->initialized) {
+		this->params = params;
+		this->track = new MarcoCell[this->params->N_racetrack];
+		for (int i = 0; i < params->N_racetrack; i++) {
+			this->track[i].Initialize(params);
+		}
+		this->GenerateEncodeAndDecodeTable();
+		this->initialized = true;
+	}
+}
+
 M_Out_Of_N_Module::~M_Out_Of_N_Module() {
 	delete[]track;
 	delete params;
@@ -82,6 +94,29 @@ void M_Out_Of_N_Module::Write(Request* request) {
 	}
 }
 
+void M_Out_Of_N_Module::GenerateEncodeAndDecodeTable() {
+	int n = params->dataSegmentLength;
+	int m = params->N_onesDataSegment;
+	int* mnCode = new int[n];
+	for (int i = 0; i < n - m; i++) {
+		mnCode[i] = 0;
+	}
+	for (int i = n - m; i < n; i++) {
+		mnCode[i] = 1;
+	}
+	uint64_t status = static_cast<uint64_t>(std::pow(2, params->dataWidthSegment));
+	std::sort(mnCode, mnCode + n);
+	for (uint64_t i = 0; i < status; i++) {
+		int* mnCodeCpy = new int[n];
+		for (int j = 0; j < n; j++) {
+			*(mnCodeCpy+j) = *(mnCode+j);
+		}
+		this->encodeTable.insert(std::pair<int, int*>(i, mnCodeCpy));
+		this->decodeTable.insert(std::pair<int*, int>(mnCodeCpy, i));
+		std::next_permutation(mnCode, mnCode + n);
+	}
+	delete[]mnCode;
+}
 
 int* M_Out_Of_N_Module::Encode(uint64_t data, int n, int m) {
 	int* nums = new int[n];
