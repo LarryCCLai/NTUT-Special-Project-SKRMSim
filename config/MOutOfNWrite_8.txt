@@ -1,0 +1,18 @@
+;********************************************************************************
+
+;Number of racetrack
+N_racetrack 1
+
+; Number of bits per data, Uint: bit
+dataWidth 64
+
+; Number of bits per data segment, Uint: bit
+dataWidthSegment 8
+
+; Write mode, Type: Naive, DCW, Flip_N_Write, Permutation_Write, M_Out_Of_N_Write
+writeMode M_Out_Of_N_Write
+
+; Number of data per racetrack
+NDR 1
+
+;********************************************************************************
