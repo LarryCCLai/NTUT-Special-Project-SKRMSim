@@ -12,6 +12,16 @@ void Module::Print() {
 	std::cout << "remove = " << this->remove << std::endl;
 }
 
+void Module::WriteResultFile(std::string fileName) {
+	std::fstream file;
+	file.open(fileName, std::ios::out);
+	file << "Shift " << this->shift <<std::endl;
+	file << "Detect " << this->detect << std::endl;
+	file << "Remove " << this->remove << std::endl;
+	file << "Injection " << this->injection << std::endl;
+	file.close();
+}
+
 int* Module::ToBinary(uint64_t num, int Nbits) {
 	int* res = new int[Nbits];
 	int idx = Nbits - 1;

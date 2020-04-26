@@ -24,7 +24,7 @@ public:
 	virtual void Initialize(Parameters*) = 0;
 	
 	void Print();
-	
+	void WriteResultFile(std::string fileName);
 	int* ToBinary(uint64_t num, int Nbits);
 	uint64_t ToDecimal(int* num, int Nbits);
 	uint64_t GetInjection();
