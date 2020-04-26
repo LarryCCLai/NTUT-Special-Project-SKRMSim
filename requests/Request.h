@@ -1,13 +1,8 @@
 #ifndef REQUEST_H
 #define REQUEST_H
-#include"typedef.h"
-#include <vector>
 #include <string>
-#include <map>
-#include <set>
-#include <fstream>
-#include <utility>
 #include<queue>
+
 class Request {
 private:
 

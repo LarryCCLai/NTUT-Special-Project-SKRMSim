@@ -1,5 +1,4 @@
 #include"MOutOfNModule.h"
-#include<iostream>
 #define R true
 #define L false
 M_Out_Of_N_Module::M_Out_Of_N_Module() {

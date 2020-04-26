@@ -1,5 +1,5 @@
 #include"ModuleFactory.h"
-#include<iostream>;
+
 Module* ModuleFactory::CreateMoudule(std::string writeMode) {
 	Module* module = nullptr;
 	if (writeMode == "Naive") {
@@ -16,9 +16,6 @@ Module* ModuleFactory::CreateMoudule(std::string writeMode) {
 	}
 	else if (writeMode == "M_Out_Of_N_Write") {
 		module = new M_Out_Of_N_Module();
-	}
-	else {
-		std::cout << "[error] Create Module, don't find corresponding module" << std::endl;
 	}
 	return module;
 }

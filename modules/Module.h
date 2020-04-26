@@ -1,9 +1,9 @@
 #ifndef MODULE_H
 #define MODULE_H
-#include"../typedef.h"
-#include"../MarcoCell.h"
-#include"../Request.h"
-#include"../Parameters.h"
+
+#include"../src/MarcoCell.h"
+#include"../requests/Request.h"
+#include"../src/Parameters.h"
 class Module {
 protected: 
 	bool initialized;

@@ -1,7 +1,7 @@
-#include"Request.h"
 #include<cassert>
 #include<iostream>
-
+#include <fstream>
+#include"Request.h"
 Request::Request() {
 	this->operation = "R";
 	this->trackIdx = -1;

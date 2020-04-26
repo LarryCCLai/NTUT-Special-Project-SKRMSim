@@ -13,7 +13,8 @@ MarcoCell::MarcoCell() {
 };
 
 MarcoCell::~MarcoCell() {
-
+	delete[]bits;
+	delete[]ports;
 }
 
 void MarcoCell::Initialize(Parameters* p) {

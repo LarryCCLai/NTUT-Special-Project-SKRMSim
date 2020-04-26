@@ -1,6 +1,4 @@
 #include"PermutationWrite_Module.h"
-
-#include<iostream>
 #define R true
 #define L false
 

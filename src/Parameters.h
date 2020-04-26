@@ -1,7 +1,6 @@
 #ifndef PARAMETERS_H
 #define PARAMETERS_H
-#include"Config.h"
-#include<map>
+#include"../config/Config.h"
 class Parameters{
 private:
 	std::map<int, std::pair<int, int>> M_N_Table;
