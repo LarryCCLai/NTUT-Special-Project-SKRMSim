@@ -16,8 +16,14 @@ void M_Out_Of_N_Module::Initialize(Parameters* params) {
 	if (!this->initialized) {
 		this->params = params;
 		this->track = new MarcoCell[this->params->N_racetrack];
-		for (int i = 0; i < params->N_racetrack; i++) {
-			this->track[i].Initialize(params);
+		for (int trackIdx = 0; trackIdx < params->N_racetrack; trackIdx++) {
+			this->track[trackIdx].Initialize(params);
+			for (int portIdx = params->NPR - 1; portIdx >= 0; portIdx--) {
+				for (int count = 0; count < params->N_onesDataSegment; count++) {
+					this->track[trackIdx].Insert_SHL(portIdx, 1);
+					this->injection++;
+				}
+			}
 		}
 		this->GenerateEncodeAndDecodeTable();
 		this->initialized = true;

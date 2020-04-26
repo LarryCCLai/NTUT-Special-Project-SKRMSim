@@ -36,18 +36,7 @@ void MarcoCell::Initialize(Parameters* p) {
 		for (int i = 0; i < this->racetrackLength; i++) {
 			this->bits[i] = 0;
 		}
-		if (p->writeMode == "M_Out_Of_N_Write") {
-			for (int i = this->NPR - 1; i >= 0; i--) {
-				for (int j = 0; j < p->N_onesDataSegment; j++) {
-					this->Insert_SHL(i, 1);
-				}
-			}
-		}
-		
-
 		this->initialized = true;
-		
-
 	}
 }
 
