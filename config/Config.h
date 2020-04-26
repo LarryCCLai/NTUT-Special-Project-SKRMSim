@@ -8,14 +8,6 @@
 #include <fstream>
 #include <utility>
 
-enum WriteMode {
-	Naive,
-	Flip_N_Write,
-	DCW,
-	Permutation_Write,
-	M_Out_Of_N_Write
-};
-
 class Config {
 private:
 	std::string fileName;

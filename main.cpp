@@ -23,24 +23,28 @@ int main(int argc, char* argv[]) {
 	RequestQueue* requests = new RequestQueue();
 	Module* module = nullptr;
 	config->Read("config.txt");
-	//requests->Read("requests.txt");
 	//config->Read(argv[1]);
 	//requests->Read(argv[2]);
 	params->SetParams(config);	
 	module = ModuleFactory::CreateMoudule(params->writeMode);
 	module->Initialize(params);
-	
-	/*while (true){
+	requests->Read("requests.txt");
+	while (true){
 		Request* request = requests->getNextRequest();
 		if (request == nullptr) {
 			break;
 		}
-		if (request->operation == "W")
+		if (request->operation == "W") {
 			module->Write(request);
+		}
 		else {
 			std::cout<<module->Read(request);
 		}
-	}*/
+		delete request;
+	}
 	module->Print();
+	delete config;
+	delete module;
+	system("puase");
 	//GenerateRequestFile();
 }
