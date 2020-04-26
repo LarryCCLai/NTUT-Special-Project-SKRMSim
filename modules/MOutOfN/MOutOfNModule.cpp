@@ -33,28 +33,20 @@ M_Out_Of_N_Module::~M_Out_Of_N_Module() {
 uint64_t M_Out_Of_N_Module::Read(Request* request) {
 	int startPN = (request->dataIdx + 1) * params->N_DataSegment - 1;
 	int endPN = request->dataIdx * params->N_DataSegment;
-	int* MOutOfNCode = new int[params->dataSegmentLength];
-	int* binaryData = new int[params->dataWidth];
-	int dataIdx = params->dataWidth - 1;
 	uint64_t data = 0;
 	for (int PN = startPN; PN >= endPN; PN--) {
-		for (int i = params->dataSegmentLength - 1; i >= 0; i--) {
-			MOutOfNCode[i] = this->track[request->trackIdx].Read(PN);
+		uint64_t MOutOfNCode = 0;
+		for (int i = 0; i < params->dataSegmentLength; i++) {
+			MOutOfNCode = MOutOfNCode | static_cast<uint64_t>(this->track[request->trackIdx].Read(PN)) << (params->dataSegmentLength - i - 1);
 			this->track[request->trackIdx].Shift(R);
-		}
-		int* dataPatition = ToBinary(this->Decode(MOutOfNCode, params->dataSegmentLength, params->N_onesDataSegment), params->dataWidthSegment);
-		
-		for (int i = params->dataWidthSegment - 1; i >= 0; i--) {
-			binaryData[dataIdx--] = dataPatition[i];
 		}
 		
 		for (int i = 0; i < params->dataSegmentLength; i++) {
 			this->track[request->trackIdx].Shift(L);
 		}
+		uint64_t dataPartition = decodeTable[MOutOfNCode];
+		data = data | (dataPartition << ((startPN - PN) * params->dataWidthSegment));
 	}
-	data = this->ToDecimal(binaryData, params->dataWidth);
-	delete[]MOutOfNCode;
-	delete[]binaryData;
 	return data;
 }
 
@@ -65,6 +57,7 @@ void M_Out_Of_N_Module::Write(Request* request) {
 	for (int i = 0; i < params->dataWidthSegment; i++) {
 		sampling = (sampling << 1) | 1;
 	}
+
 	for (int PN = startPN; PN >= endPN; PN--) {
 		for (int i = 0; i < params->dataSegmentLength; i++) {
 			this->detect++;
@@ -77,10 +70,11 @@ void M_Out_Of_N_Module::Write(Request* request) {
 				this->shift++;
 			}
 		}
+
 		uint64_t dataS = (sampling & request->data) >> ((startPN - PN) * params->dataWidthSegment);
-		int* MOutOfNCode = this->Encode(dataS, params->dataSegmentLength, params->N_onesDataSegment);
+		uint64_t MOutOfNCode = encodeTable[dataS];
 		for (int i = 0; i < params->dataSegmentLength; i++) {
-			if (MOutOfNCode[i] == 1) {
+			if ((MOutOfNCode & 1) == 1) {
 				this->track[request->trackIdx].Shift(L);
 				this->shift++;
 			}
@@ -88,16 +82,16 @@ void M_Out_Of_N_Module::Write(Request* request) {
 				this->track[request->trackIdx].Insert_SHL(PN, 0);
 				this->shift++;
 			}
+			MOutOfNCode = MOutOfNCode >> 1;
 		}
 		sampling = sampling << params->dataWidthSegment;
-		delete[]MOutOfNCode;
 	}
 }
 
 void M_Out_Of_N_Module::GenerateEncodeAndDecodeTable() {
 	int n = params->dataSegmentLength;
 	int m = params->N_onesDataSegment;
-	int* mnCode = new int[n];
+	uint64_t* mnCode = new uint64_t[n];
 	for (int i = 0; i < n - m; i++) {
 		mnCode[i] = 0;
 	}
@@ -107,12 +101,17 @@ void M_Out_Of_N_Module::GenerateEncodeAndDecodeTable() {
 	uint64_t status = static_cast<uint64_t>(std::pow(2, params->dataWidthSegment));
 	std::sort(mnCode, mnCode + n);
 	for (uint64_t i = 0; i < status; i++) {
-		int* mnCodeCpy = new int[n];
+		uint64_t mnCodeU64 = 0;
 		for (int j = 0; j < n; j++) {
-			*(mnCodeCpy+j) = *(mnCode+j);
+			mnCodeU64 = mnCodeU64 | mnCode[j] << (n - j - 1);
 		}
-		this->encodeTable.insert(std::pair<int, int*>(i, mnCodeCpy));
-		this->decodeTable.insert(std::pair<int*, int>(mnCodeCpy, i));
+		/*std::cout << i << " ";
+		for (int j = 0; j < n; j++) {
+			std::cout << mnCode[j];
+		}
+		std::cout << " " << mnCodeU64<<std::endl;*/
+		this->encodeTable.insert(std::pair<uint64_t, uint64_t>(i, mnCodeU64));
+		this->decodeTable.insert(std::pair<uint64_t, uint64_t>(mnCodeU64, i));
 		std::next_permutation(mnCode, mnCode + n);
 	}
 	delete[]mnCode;

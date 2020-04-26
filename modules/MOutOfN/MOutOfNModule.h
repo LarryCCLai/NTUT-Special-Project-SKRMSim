@@ -4,8 +4,8 @@
 
 class M_Out_Of_N_Module: public Module {
 private:
-	std::map<int, int*> encodeTable;
-	std::map<int*, int> decodeTable;
+	std::map<uint64_t, uint64_t> encodeTable;
+	std::map<uint64_t, uint64_t> decodeTable;
 public:
 	
 	M_Out_Of_N_Module();
