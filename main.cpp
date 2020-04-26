@@ -19,11 +19,12 @@ int main(int argc, char* argv[]) {
 	Parameters* params = new Parameters();
 	RequestQueue* requests = new RequestQueue();
 	Module* module = nullptr;
-	std::string configFileName = "MOutOfNWrite_16.txt";
+	std::string configFileName = "DCW.txt";
 	config->Read(configFileName);
 	//config->Read(argv[1]);
 	//requests->Read(argv[2]);
 	params->SetParams(config);	
+	params->Print();
 	module = ModuleFactory::CreateMoudule(params->writeMode);
 	module->Initialize(params);
 	

@@ -15,7 +15,7 @@ public:
 	int N_racetrack;		/* Number of tracks */
 	int dataWidth;			/* Number of bits per data, Uint: bit */
 	int dataWidthSegment;	/* Number of bits per data segment, Uint: bit */
-	std::string writeMode;		/* Write mode */
+	WriteMode writeMode;		/* Write mode */
 	int NDR;				/* Number of Data per racetrack */
 
 	int N_DataSegment;		/* Number of data segments per data: dataWidth / dataWidthSegment */

@@ -10,7 +10,7 @@ class ModuleFactory {
 public:
 	ModuleFactory ();
 	~ModuleFactory ();
-	static Module* CreateMoudule(std::string writeMode);
+	static Module* CreateMoudule(WriteMode writeMode);
 private:
 
 };

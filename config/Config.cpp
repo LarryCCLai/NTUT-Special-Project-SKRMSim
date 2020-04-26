@@ -204,6 +204,46 @@ void  Config::SetString(std::string key, std::string value) {
 	values.insert(std::pair<std::string, std::string>(key, value));
 }
 
+void  Config::GetMode(std::string key, WriteMode& value) {
+	std::map<std::string, std::string>::iterator idx;
+	int V;
+	if (values.empty()) {
+		std::cerr << "Configuration has not been read yet." << std::endl;
+	}
+	idx = values.find(key);
+
+	if (!KeyExists(key) && !warned.count(key)) {
+		std::cout << "Config: Warning: Key [" << key << "] is not set. Using '-1' as the default. Please configure this value if this is wrong." << std::endl;
+		warned.insert(key);
+	}
+
+	if (idx == values.end()) {
+		V = std::numeric_limits<uint64_t>::max();
+	}
+	else {
+		V = strtoul(idx->second.c_str(), NULL, 10);
+	}
+	if (V == 0) {
+		value = WriteMode::Naive;
+	}
+	else if (V == 1) {
+		value = WriteMode::DCW;
+	}
+	else if (V == 2) {
+		value = WriteMode::Flip_N_Write;
+	}
+	else if (V == 3) {
+		value = WriteMode::Permutation_Write;
+	}
+	else if (V == 4) {
+		value = WriteMode::M_Out_Of_N_Write;
+	}
+	else {
+		std::cout << "[error] Config: Get write mode value." << std::endl;
+		exit(1);
+	}
+}
+
 void Config::Print() {
 	std::map<std::string, std::string>::iterator idx;
 

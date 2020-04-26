@@ -9,7 +9,7 @@ Parameters::Parameters() {
 	
 	this->dataWidth = 64;
 	this->dataWidthSegment = 16;
-	this->writeMode = "M_Out_Of_N_Write";
+	this->writeMode = WriteMode::M_Out_Of_N_Write;
 	this->NDR = 1;
 	
 	this->N_DataSegment = this->dataWidth / this->dataWidthSegment;
@@ -28,24 +28,25 @@ void Parameters::SetParams(Config* c) {
 	c->GetValue("dataWidthSegment", this->dataWidthSegment);
 	c->GetValue("NDR", this->NDR);
 	c->GetValue("N_racetrack", this->N_racetrack);
-	c->GetString("writeMode", this->writeMode);
+	c->GetMode("writeMode", this->writeMode);
 
 	this->N_DataSegment = this->dataWidth / this->dataWidthSegment;
 	this->N_dataSegmentR = this->NDR * this->N_DataSegment;
-	if (this->writeMode == "M_Out_Of_N_Write") {
+	if (this->writeMode == WriteMode::M_Out_Of_N_Write) {
 		this->dataSegmentLength = M_N_Table[dataWidthSegment].first;
 		this->N_onesDataSegment = M_N_Table[dataWidthSegment].second;
 	}
-	else if (this->writeMode == "Flip_N_Write") {
+	else if (this->writeMode == WriteMode::Flip_N_Write) {
 		this->dataSegmentLength = dataWidthSegment + 1;
 		this->N_onesDataSegment = NULL;
 	}
-	else if (this->writeMode == "Permutation_Write" || this->writeMode == "DCW" || this->writeMode == "Naive") {
+	else if (this->writeMode == WriteMode::Naive || this->writeMode == WriteMode::DCW || this->writeMode == WriteMode::Permutation_Write) {
 		this->dataSegmentLength = dataWidthSegment;
 		this->N_onesDataSegment = NULL;
 	}
 	else {
 		std::cout << "[error] config file: write mode value" << std::endl;
+		exit(1);
 	}
 
 	this->NSDR = dataSegmentLength;
