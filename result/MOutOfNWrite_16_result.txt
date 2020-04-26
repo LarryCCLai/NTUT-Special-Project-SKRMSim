@@ -1,0 +1,4 @@
+Shift 152000000
+Detect 76000000
+Remove 0
+Injection 32

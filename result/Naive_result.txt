@@ -1,0 +1,4 @@
+Shift 128000000
+Detect 0
+Remove 64000000
+Injection 30995191

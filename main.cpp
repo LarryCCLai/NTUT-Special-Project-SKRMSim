@@ -19,13 +19,14 @@ int main(int argc, char* argv[]) {
 	Parameters* params = new Parameters();
 	RequestQueue* requests = new RequestQueue();
 	Module* module = nullptr;
-	config->Read("config.txt");
+	std::string configFileName = "MOutOfNWrite_16.txt";
+	config->Read(configFileName);
 	//config->Read(argv[1]);
 	//requests->Read(argv[2]);
 	params->SetParams(config);	
 	module = ModuleFactory::CreateMoudule(params->writeMode);
 	module->Initialize(params);
-
+	
 	std::string line;
 	std::string subline;
 	std::string fileName = "requests.txt";
@@ -37,8 +38,8 @@ int main(int argc, char* argv[]) {
 			if (pos == std::string::npos) {
 				continue;
 			}
-			else if (line[pos] == ';') {/* else, check whether the first character is the comment flag. */
-				continue;				/* if so, skip it */
+			else if (line[pos] == ';') { 
+				continue;				
 			}
 			else {
 				size_t colonPos = line.find_first_of(";");
@@ -103,6 +104,8 @@ int main(int argc, char* argv[]) {
 		delete request;
 	}*/
 	module->Print();
+	std::string resultFileName = configFileName.substr(0, configFileName.find("."))+"_result"+ configFileName.substr(configFileName.find("."), configFileName.size());
+	module->WriteResultFile(resultFileName);
 	delete config;
 	delete module;
 	system("pause");
