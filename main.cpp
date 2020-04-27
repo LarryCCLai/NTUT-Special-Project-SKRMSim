@@ -19,10 +19,8 @@ int main(int argc, char* argv[]) {
 	Parameters* params = new Parameters();
 	RequestQueue* requests = new RequestQueue();
 	Module* module = nullptr;
-	std::string configFileName = "DCW.txt";
+	std::string configFileName = argv[1];
 	config->Read(configFileName);
-	//config->Read(argv[1]);
-	//requests->Read(argv[2]);
 	params->SetParams(config);	
 	params->Print();
 	module = ModuleFactory::CreateMoudule(params->writeMode);
@@ -30,7 +28,7 @@ int main(int argc, char* argv[]) {
 	
 	std::string line;
 	std::string subline;
-	std::string fileName = "requests.txt";
+	std::string fileName = argv[2];
 	std::ifstream configFile(fileName.c_str());
 	if (configFile.is_open()) {
 		while (!configFile.eof()) {
@@ -89,26 +87,15 @@ int main(int argc, char* argv[]) {
 			delete request;
 		}
 	}
-	/*
-	requests->Read("requests.txt");
-	while (true){
-		Request* request = requests->getNextRequest();
-		if (request == nullptr) {
-			break;
-		}
-		if (request->operation == "W") {
-			module->Write(request);
-		}
-		else {
-			std::cout<<module->Read(request);
-		}
-		delete request;
-	}*/
+	else {
+		std::cout << "[error] Could not read request file." << std::endl;
+		exit(1);
+	}
 	module->Print();
 	std::string resultFileName = configFileName.substr(0, configFileName.find("."))+"_result"+ configFileName.substr(configFileName.find("."), configFileName.size());
 	module->WriteResultFile(resultFileName);
+	params->CreateParamsFile(configFileName);
 	delete config;
 	delete module;
-	system("pause");
-	//GenerateRequestFile();
+	return 0;
 }

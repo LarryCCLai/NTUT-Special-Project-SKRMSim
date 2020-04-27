@@ -10,7 +10,7 @@ public:
 	void SetParams(Config* c);
 	void CalculateMOutOfN(int&, int&);
 	void Print();
-
+	void CreateParamsFile(std::string fileName);
 
 	int N_racetrack;		/* Number of tracks */
 	int dataWidth;			/* Number of bits per data, Uint: bit */
