@@ -15,13 +15,25 @@ void Module::Print() {
 }
 
 void Module::WriteResultFile(std::string fileName) {
-	std::fstream file;
-	file.open(fileName, std::ios::out);
-	file << "Shift " << this->shift <<std::endl;
-	file << "Detect " << this->detect << std::endl;
-	file << "Remove " << this->remove << std::endl;
-	file << "Injection " << this->injection << std::endl;
-	file.close();
+	size_t pos = fileName.find_last_of("/");
+	if (pos != std::string::npos) {
+		fileName = fileName.substr(pos + 1, fileName.size());
+	}
+	std::string resultFileName = "./result/" + fileName.substr(0, fileName.find(".")) + "_result" + fileName.substr(fileName.find("."), fileName.size());
+
+	std::ofstream file(resultFileName.c_str());
+	if (file.is_open()) {
+		file << "Shift " << this->shift << std::endl;
+		file << "Detect " << this->detect << std::endl;
+		file << "Remove " << this->remove << std::endl;
+		file << "Injection " << this->injection << std::endl;
+		file.close();
+	}
+	else {
+		std::cout << "Could not open Result file" << std::endl;
+		std::cout << fileName << std::endl;
+		exit(1);
+	}
 }
 
 int* Module::ToBinary(uint64_t num, int Nbits) {
