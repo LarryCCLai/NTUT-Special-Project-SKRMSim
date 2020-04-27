@@ -17,5 +17,8 @@ Module* ModuleFactory::CreateMoudule(WriteMode writeMode) {
 	else if (writeMode == WriteMode::M_Out_Of_N_Write) {
 		module = new M_Out_Of_N_Module();
 	}
+	else if (writeMode == WriteMode::Combine_PW_FNW) {
+		module = new Combine_PW_FNW_Module();
+	}
 	return module;
 }

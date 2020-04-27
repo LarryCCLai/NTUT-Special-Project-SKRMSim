@@ -15,6 +15,7 @@ dataWidthSegment 64
 ; Flip_N_Write 2 
 ; Permutation_Write 3 
 ; M_Out_Of_N_Write 4
+; Combine_PW_FNW 5
 writeMode 0
 
 ; Number of data per racetrack

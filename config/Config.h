@@ -13,7 +13,8 @@ enum WriteMode {
 	DCW,
 	Flip_N_Write,
 	Permutation_Write,
-	M_Out_Of_N_Write
+	M_Out_Of_N_Write,
+	Combine_PW_FNW
 };
 
 class Config {

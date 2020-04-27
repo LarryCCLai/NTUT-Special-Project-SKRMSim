@@ -5,7 +5,7 @@
 #include"FlipNWrite/Flip_N_Write_Module.h"
 #include"PermutationWrite/PermutationWrite_Module.h"
 #include"MOutOfN/MOutOfNModule.h"
-
+#include"Combine_PW_FNW/Combine_PW_FNW_Module.h"
 class ModuleFactory {
 public:
 	ModuleFactory ();

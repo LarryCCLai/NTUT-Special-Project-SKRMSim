@@ -36,13 +36,13 @@ uint64_t PermutationWrite_Module::Read(Request* request) {
 	for (int PN = startPN; PN >= endPN; PN--) {
 		for (int i = params->dataWidthSegment - 1; i >= 0; i--) {
 			binaryData[i] = this->track[request->trackIdx].Read(PN);
-			this->detect++;
+			//this->detect++;
 			this->track[request->trackIdx].Shift(R);
-			this->shift++;
+			//this->shift++;
 		}
 		for (int i = params->dataWidthSegment - 1; i >= 0; i--) {
 			this->track[request->trackIdx].Shift(L);
-			this->shift++;
+			//this->shift++;
 		}
 	}
 	uint64_t data = this->ToDecimal(binaryData, params->dataWidth);

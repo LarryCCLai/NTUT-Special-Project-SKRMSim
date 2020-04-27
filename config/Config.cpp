@@ -238,6 +238,9 @@ void  Config::GetMode(std::string key, WriteMode& value) {
 	else if (V == 4) {
 		value = WriteMode::M_Out_Of_N_Write;
 	}
+	else if (V == 5) {
+		value = WriteMode::Combine_PW_FNW;
+	}
 	else {
 		std::cout << "[error] Config: Get write mode value." << std::endl;
 		exit(1);

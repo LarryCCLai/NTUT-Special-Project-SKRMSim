@@ -37,7 +37,7 @@ void Parameters::SetParams(Config* c) {
 		this->dataSegmentLength = M_N_Table[dataWidthSegment].first;
 		this->N_onesDataSegment = M_N_Table[dataWidthSegment].second;
 	}
-	else if (this->writeMode == WriteMode::Flip_N_Write) {
+	else if (this->writeMode == WriteMode::Flip_N_Write || this->writeMode ==WriteMode::Combine_PW_FNW) {
 		this->dataSegmentLength = dataWidthSegment + 1;
 		this->N_onesDataSegment = NULL;
 	}
