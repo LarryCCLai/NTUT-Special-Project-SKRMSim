@@ -14,8 +14,6 @@ protected:
 	uint64_t remove;
 	uint64_t shift;
 	uint64_t detect;
-	uint64_t a=0;
-	uint64_t b=0;
 public:
 	Module();
 	

@@ -84,37 +84,37 @@ void Parameters::CreateParamsFile(std::string fileName) {
 		file << ";***********************************************************************\n" << std::endl;
 		file << ";Number of tracks" << std::endl;
 		file << "N_racetrack = " << this->N_racetrack << std::endl;
-
+		file << "\n";
 		file << ";Number of bits per data, Uint: bit" << std::endl;
 		file << "dataWidth = " << this->dataWidth << std::endl;
-
+		file << "\n";
 		file << ";Number of bits per data segment, Uint: bit" << std::endl;
 		file << "dataWidthSegment = " << this->dataWidthSegment << std::endl;
-
+		file << "\n";
 		file << ";Number of data per racetrack" << std::endl;
 		file << "NDR = " << this->NDR << std::endl;
-
+		file << "\n";
 		file << ";Write mode" << std::endl;
 		file << "writeMode = " << this->writeMode << std::endl;
-
+		file << "\n";
 		file << ";Number of data segments per data: dataWidth / dataWidthSegment" << std::endl;
 		file << "N_DataSegment = " << this->N_DataSegment << std::endl;
-
+		file << "\n";
 		file << ";Number of data segment per racetrack: NDR * N_DataSegment" << std::endl;
 		file << "N_dataSegmentR = " << this->N_dataSegmentR << std::endl;
-
+		file << "\n";
 		file << ";dataSegmentLength: n (m-out-of-n), dataWidthSegment + 1 (flip-N-write) or dataWidthSegment (the others)" << std::endl;
 		file << "dataSegmentLength = " << this->dataSegmentLength << std::endl;
-
+		file << "\n";
 		file << ";Number of bits are one per DataSegment: m" << std::endl;
 		file << "N_onesDataSegment = " << this->N_onesDataSegment << std::endl;
-
+		file << "\n";
 		file << ";racetrackLength: NDR * N_DataSegment * dataSegmentLength + NSDR" << std::endl;
 		file << "racetrackLength = " << this->racetrackLength << std::endl;
-
+		file << "\n";
 		file << ";Number of Port per racetrack" << std::endl;
 		file << "NPR = " << this->NPR << std::endl;
-
+		file << "\n";
 		file << ";Number of spare domain per racetrack" << std::endl;
 		file << "NSDR = " << this->NSDR << std::endl;
 		file << "\n;***********************************************************************" << std::endl;

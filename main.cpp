@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
 	Parameters* params = new Parameters();
 	RequestQueue* requests = new RequestQueue();
 	Module* module = nullptr;
-	std::string configFileName = "Combine_PW_FNW.txt";
+	std::string configFileName = argv[1];
 	config->Read(configFileName);
 	params->SetParams(config);	
 	params->Print();
@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 	
 	std::string line;
 	std::string subline;
-	std::string fileName = "requests.txt";
+	std::string fileName = argv[2];
 	std::ifstream configFile(fileName.c_str());
 	if (configFile.is_open()) {
 		while (!configFile.eof()) {

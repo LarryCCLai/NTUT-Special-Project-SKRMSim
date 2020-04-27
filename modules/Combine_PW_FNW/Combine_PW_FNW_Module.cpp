@@ -140,21 +140,6 @@ void Combine_PW_FNW_Module::Write(Request* request) {
 			newFlip = 0;
 		}*/
 		data = FlipNWrite(request->data, newFlip, skyCount);
-		//====
-		//std::cout << "skyCount "<<skyCount << std::endl;
-		int aa = 0;
-		for (int i = 0; i < params->dataWidthSegment; i++) {
-			if (data[i] == 1) {
-				aa++;;
-			}
-		}
-		if (aa > skyCount) {
-			a += aa - skyCount;
-		}
-		else {
-			b += skyCount - aa;
-		}
-		//std::cout<< "#datas "<< aa << std::endl;
 		
 		//write data
 		for (int i = 0; i < params->dataWidthSegment; i++) {
