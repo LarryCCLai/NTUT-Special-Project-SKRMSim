@@ -12,6 +12,7 @@ void Module::Print() {
 	std::cout << "injection = " << this->injection << std::endl;
 	std::cout << "detect = " << this->detect << std::endl;
 	std::cout << "remove = " << this->remove << std::endl;
+	std::cout << a << " " << b << std::endl;
 }
 
 void Module::WriteResultFile(std::string fileName) {

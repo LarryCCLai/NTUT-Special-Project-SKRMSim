@@ -11,6 +11,7 @@ public:
 
 private:
 	int HammingDistance(uint64_t oldData, int oldFlip, uint64_t newData, int newFlip);
+	int* FlipNWrite(uint64_t newData, int& newFlip, int skyCount);
 };
 
 #endif // !COMBINE_PW_FNW_MODULE_H

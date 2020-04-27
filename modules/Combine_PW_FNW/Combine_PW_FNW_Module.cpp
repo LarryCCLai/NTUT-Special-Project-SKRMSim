@@ -1,7 +1,7 @@
 #include"Combine_PW_FNW_Module.h"
 #define R true
 #define L false
-
+#include<iostream>
 Combine_PW_FNW_Module::Combine_PW_FNW_Module() {
 	this->injection = 0;
 	this->remove = 0;
@@ -38,6 +38,27 @@ int Combine_PW_FNW_Module::HammingDistance(uint64_t oldData, int oldFlip, uint64
 	}
 	(oldFlip == newFlip) ? count : count++;
 	return count;
+}
+
+int* Combine_PW_FNW_Module::FlipNWrite(uint64_t newData, int& newFlip, int skyCount) {
+	int count1 = 0;
+	uint64_t data = newData;
+	for (int i = 0; i < params->dataWidthSegment; i++) {
+		if ((newData & 1) == 1) {
+			count1++;
+		}
+		newData = newData >> 1;
+	}
+	int count0 = params->dataWidthSegment - count1 + 1;
+	
+	if (std::abs(count0 - skyCount) < std::abs(count1 - skyCount)) {
+		newFlip = 1;
+		data = ~data;
+	}
+	else {
+		newFlip = 0;
+	}
+	return ToBinary(data, params->dataWidthSegment);
 }
 
 uint64_t Combine_PW_FNW_Module::Read(Request* request) {
@@ -106,17 +127,35 @@ void Combine_PW_FNW_Module::Write(Request* request) {
 				skyCount++;
 			}
 		}
+		
 		//calculate hamming distance
-		int hamingDistance = HammingDistance(this->ToDecimal(oldData, params->dataWidthSegment), oldFlip, request->data, newFlip);
+		/*int hamingDistance = HammingDistance(this->ToDecimal(oldData, params->dataWidthSegment), oldFlip, request->data, newFlip);
 		//Flip or not
-		if (hamingDistance > params->dataWidthSegment / 2) {
+		if (hamingDistance > params->dataWidthSegment/2) {
 			data = this->ToBinary(~request->data, params->dataWidthSegment);
 			newFlip = 1;
 		}
 		else {
 			data = this->ToBinary(request->data, params->dataWidthSegment);
 			newFlip = 0;
+		}*/
+		data = FlipNWrite(request->data, newFlip, skyCount);
+		//====
+		//std::cout << "skyCount "<<skyCount << std::endl;
+		int aa = 0;
+		for (int i = 0; i < params->dataWidthSegment; i++) {
+			if (data[i] == 1) {
+				aa++;;
+			}
 		}
+		if (aa > skyCount) {
+			a += aa - skyCount;
+		}
+		else {
+			b += skyCount - aa;
+		}
+		//std::cout<< "#datas "<< aa << std::endl;
+		
 		//write data
 		for (int i = 0; i < params->dataWidthSegment; i++) {
 			if (data[i] == 0) {
@@ -162,6 +201,8 @@ void Combine_PW_FNW_Module::Write(Request* request) {
 			this->remove++;
 			skyCount--;
 		}
+
+
 		delete[]data;
 	}
 	delete[]oldData;
