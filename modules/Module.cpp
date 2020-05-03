@@ -1,11 +1,81 @@
 #include<iostream>
 #include<cmath>
+#include<cassert>
+
 #include"Module.h"
 
 
 Module::Module() {
 }
 
+void Module::Sim(std::string filename) {
+	std::string line;
+	std::string subline;
+	std::string fileName = "requests.txt";
+	
+	std::ifstream configFile(fileName.c_str());
+	if (configFile.is_open()) {
+		while (!configFile.eof()) {
+			getline(configFile, line);
+			size_t pos = line.find_first_not_of("\t\r\n");
+			if (pos == std::string::npos) {
+				continue;
+			}
+			else if (line[pos] == ';') {
+				continue;
+			}
+			else {
+				size_t colonPos = line.find_first_of(";");
+				if (colonPos == std::string::npos) {
+					subline = line.substr(pos);
+				}
+				else {
+					assert(colonPos > pos);
+					subline = line.substr(pos, colonPos - pos);
+				}
+			}
+			std::string operation;
+			int trackIdx;
+			int dataIdx;
+			uint64_t data;
+
+
+
+			std::string::size_type sz = 0;
+			pos = subline.find(" ");
+			assert(pos != std::string::npos);
+			operation = subline.substr(0, pos);
+			subline = subline.substr(pos + 1, subline.size());
+
+			pos = subline.find(" ");
+			assert(pos != std::string::npos);
+			trackIdx = std::stoull(subline.substr(0, pos), &sz, 0);
+			subline = subline.substr(sz + 1);
+
+			pos = subline.find(" ");
+			assert(pos != std::string::npos);
+			dataIdx = std::stoi(subline.substr(0, pos), &sz, 0);
+			subline = subline.substr(sz + 1);
+
+			pos = subline.find(" ");
+			assert(pos == std::string::npos);
+			data = std::stoull(subline.substr(0, pos), &sz, 0);
+
+			Request* request = new Request(operation, trackIdx, dataIdx, data);
+			if (request->operation == "W") {
+				this->Write(request);
+			}
+			else {
+				std::cout << this->Read(request);
+			}
+			delete request;
+		}
+	}
+	else {
+		std::cout << "[error] Could not read request file." << std::endl;
+		exit(1);
+	}
+}
 
 void Module::Print() {
 	std::cout << "shift = " << this->shift << std::endl;

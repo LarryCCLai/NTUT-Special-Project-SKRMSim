@@ -1,6 +1,7 @@
 #include<cassert>
 #include<iostream>
 #include <fstream>
+#include<ctime>
 #include"Request.h"
 Request::Request() {
 	this->operation = "R";
@@ -18,6 +19,46 @@ Request::Request(std::string operation, int trackIdx, int dataIdx, uint64_t data
 
 Request::~Request() {
 
+}
+
+std::string Request::TransFormat(std::string inputfileName, int trackIdxMax, int dataIdxMax) {
+	srand(time(NULL));
+	std::string line;
+	std::string subline;
+	std::ifstream inputFile(inputfileName.c_str());
+	std::string outputfileName = "requests_" + inputfileName;
+	std::ofstream ouputFile(outputfileName.c_str());
+	if (inputFile.is_open() && ouputFile.is_open()) {
+		while (!inputFile.eof()) {
+			getline(inputFile, line);
+			size_t pos = line.find("INSERT");
+			if (pos != 0) {
+				continue;
+			}
+			else {
+				for (int i = 0; i < 128; i++) {
+					std::string goal = "field" + std::to_string(i) + "=";
+					pos = line.find(goal);
+					pos += goal.size();
+					std::string dataStr = line.substr(pos, 8);
+					uint64_t data = 0;
+					for (int j = 7; j >= 0; j--) {
+						char ch = dataStr[j];
+						uint64_t part = static_cast<uint64_t>(ch);
+						data += (part << ((7 - j) * 8));
+					}
+					int trackIdx = rand() % trackIdxMax;
+					int dataIdx = rand() % dataIdxMax;
+					ouputFile << "W " << trackIdx << " " << dataIdx << " " << data << std::endl;
+				}
+			}
+		}
+	}
+	else {
+		std::cout << "Could not open file." << std::endl;
+		exit(1);
+	}
+	return outputfileName;
 }
 
 //================================================================

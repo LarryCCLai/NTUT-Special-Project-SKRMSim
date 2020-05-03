@@ -12,6 +12,7 @@ MarcoCell::MarcoCell() {
 	this->initialized = false;
 };
 
+
 MarcoCell::~MarcoCell() {
 	delete[]bits;
 	delete[]ports;
@@ -26,9 +27,16 @@ void MarcoCell::Initialize(Parameters* p) {
 		this->NSDR = p->NSDR;
 		this->bits = new int[this->racetrackLength];
 		this->ports = new AccessPort[this->NPR];
-
-		int interval = (this->racetrackLength - this->NSDR) / this->NPR;
-		int count = interval - 1;
+		int interval = 0;
+		int count = 0;
+		if (p->writeMode == WriteMode::Permutation_Write) {
+			interval = p->dataWidthSegment + 1;
+			count = 0;
+		}
+		else {
+			interval = (this->racetrackLength - this->NSDR) / this->NPR;
+			count = interval - 1;
+		}
 		for (int i = 0; i < this->NPR; i++) {
 			this->ports[i].setAlign(count);
 			count += interval;

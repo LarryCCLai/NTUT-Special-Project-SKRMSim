@@ -30,14 +30,12 @@ void Parameters::SetParams(Config* c) {
 	c->GetValue("NDR", this->NDR);
 	c->GetValue("N_racetrack", this->N_racetrack);
 	c->GetMode("writeMode", this->writeMode);
-
-	this->N_DataSegment = this->dataWidth / this->dataWidthSegment;
-	this->N_dataSegmentR = this->NDR * this->N_DataSegment;
+	
 	if (this->writeMode == WriteMode::M_Out_Of_N_Write) {
 		this->dataSegmentLength = M_N_Table[dataWidthSegment].first;
 		this->N_onesDataSegment = M_N_Table[dataWidthSegment].second;
 	}
-	else if (this->writeMode == WriteMode::Flip_N_Write || this->writeMode ==WriteMode::Combine_PW_FNW) {
+	else if (this->writeMode == WriteMode::Flip_N_Write || this->writeMode == WriteMode::Combine_PW_FNW) {
 		this->dataSegmentLength = dataWidthSegment + 1;
 		this->N_onesDataSegment = NULL;
 	}
@@ -50,9 +48,18 @@ void Parameters::SetParams(Config* c) {
 		exit(1);
 	}
 
+	
+	
+	this->N_DataSegment = this->dataWidth / this->dataWidthSegment;
+	this->N_dataSegmentR = this->NDR * this->N_DataSegment;
+
 	this->NSDR = dataSegmentLength;
-	this->NPR = N_dataSegmentR;
+	this->NPR = (this->writeMode == WriteMode::Permutation_Write)? N_dataSegmentR + 1 : N_dataSegmentR;
+
 	this->racetrackLength = this->NDR * this->N_DataSegment * this->dataSegmentLength + this->NSDR;
+	if (this->writeMode == WriteMode::Permutation_Write) {
+		this->racetrackLength = this->racetrackLength + this->NPR;
+	}
 }
 
 

@@ -11,6 +11,8 @@ public:
 	uint64_t trackIdx;
 	int dataIdx;
 	uint64_t data;
+	static std::string TransFormat(std::string inputfileName, int trackIdxMax, int dataIdxMax);
+	
 	Request();
 	Request(std::string operation, int trackIdx, int dataIdx, uint64_t data);
 	~Request ();
@@ -23,7 +25,7 @@ private:
 public:
 	RequestQueue();
 	~RequestQueue();
-
+	
 	void Read(std::string filename);
 	std::string GetFileName();
 	Request* getNextRequest();

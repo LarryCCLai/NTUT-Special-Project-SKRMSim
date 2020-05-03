@@ -22,7 +22,7 @@ public:
 	virtual void Write(Request*) = 0;
 	
 	virtual void Initialize(Parameters*) = 0;
-	
+	void Sim(std::string filename);
 	void Print();
 	void WriteResultFile(std::string fileName);
 	int* ToBinary(uint64_t num, int Nbits);

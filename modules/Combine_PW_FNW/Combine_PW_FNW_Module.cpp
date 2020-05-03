@@ -39,7 +39,7 @@ int Combine_PW_FNW_Module::HammingDistance(uint64_t oldData, int oldFlip, uint64
 	(oldFlip == newFlip) ? count : count++;
 	return count;
 }
-
+/*
 int* Combine_PW_FNW_Module::FlipNWrite(uint64_t newData, int& newFlip, int skyCount) {
 	int count1 = 0;
 	uint64_t data = newData;
@@ -60,7 +60,7 @@ int* Combine_PW_FNW_Module::FlipNWrite(uint64_t newData, int& newFlip, int skyCo
 	}
 	return ToBinary(data, params->dataWidthSegment);
 }
-
+*/
 uint64_t Combine_PW_FNW_Module::Read(Request* request) {
 	int startPN = (request->dataIdx + 1) * params->N_DataSegment - 1;
 	int endPN = request->dataIdx * params->N_DataSegment;
@@ -129,7 +129,7 @@ void Combine_PW_FNW_Module::Write(Request* request) {
 		}
 		
 		//calculate hamming distance
-		/*int hamingDistance = HammingDistance(this->ToDecimal(oldData, params->dataWidthSegment), oldFlip, request->data, newFlip);
+		int hamingDistance = HammingDistance(this->ToDecimal(oldData, params->dataWidthSegment), oldFlip, request->data, newFlip);
 		//Flip or not
 		if (hamingDistance > params->dataWidthSegment/2) {
 			data = this->ToBinary(~request->data, params->dataWidthSegment);
@@ -138,8 +138,8 @@ void Combine_PW_FNW_Module::Write(Request* request) {
 		else {
 			data = this->ToBinary(request->data, params->dataWidthSegment);
 			newFlip = 0;
-		}*/
-		data = FlipNWrite(request->data, newFlip, skyCount);
+		}
+		//data = FlipNWrite(request->data, newFlip, skyCount);
 		
 		//write data
 		for (int i = 0; i < params->dataWidthSegment; i++) {
