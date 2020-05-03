@@ -19,21 +19,22 @@ int main(int argc, char* argv[]) {
 	Parameters* params = new Parameters();
 	RequestQueue* requests = new RequestQueue();
 	Module* module = nullptr;
-	
-	std::string configFileName = "Combine_PW_FNW.txt";
-	//std::string configFileName = argv[1];
+
+	//std::string configFileName = "Combine_PW_FNW.txt";
+	std::string configFileName = argv[1];
 	config->Read(configFileName);
-	params->SetParams(config);	
+	params->SetParams(config);
 	params->Print();
 	module = ModuleFactory::CreateMoudule(params->writeMode);
 	module->Initialize(params);
-	std::string fileName = "load_a.txt";
-	//std::string fileName = argv[2];
-	std::string requestFileName = Request::TransFormat(fileName,params->N_racetrack,params->NDR);
+	//std::string fileName = "load_a.txt";
+	std::string fileName = argv[2];
+	std::string requestFileName = Request::TransFormat(fileName, params->N_racetrack, params->NDR);
+
 	module->Sim(requestFileName);
-	
+
 	module->Print();
-	std::string resultFileName = configFileName.substr(0, configFileName.find("."))+"_result"+ configFileName.substr(configFileName.find("."), configFileName.size());
+	std::string resultFileName = configFileName.substr(0, configFileName.find(".")) + "_result" + configFileName.substr(configFileName.find("."), configFileName.size());
 	module->WriteResultFile(resultFileName);
 	params->CreateParamsFile(configFileName);
 	delete config;

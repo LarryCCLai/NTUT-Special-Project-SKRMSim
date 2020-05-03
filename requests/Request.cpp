@@ -22,11 +22,16 @@ Request::~Request() {
 }
 
 std::string Request::TransFormat(std::string inputfileName, int trackIdxMax, int dataIdxMax) {
+	std::string outputfileName;
+	size_t pos = inputfileName.find_last_of("/");
+	if (pos != std::string::npos) {
+		outputfileName = inputfileName.substr(pos + 1, inputfileName.size());
+	}
+	outputfileName = "./requests/requests_" + outputfileName;
 	srand(time(NULL));
 	std::string line;
 	std::string subline;
 	std::ifstream inputFile(inputfileName.c_str());
-	std::string outputfileName = "requests_" + inputfileName;
 	std::ofstream ouputFile(outputfileName.c_str());
 	if (inputFile.is_open() && ouputFile.is_open()) {
 		while (!inputFile.eof()) {

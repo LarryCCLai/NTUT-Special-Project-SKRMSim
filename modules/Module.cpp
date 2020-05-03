@@ -8,11 +8,9 @@
 Module::Module() {
 }
 
-void Module::Sim(std::string filename) {
+void Module::Sim(std::string fileName) {
 	std::string line;
 	std::string subline;
-	std::string fileName = "requests.txt";
-	
 	std::ifstream configFile(fileName.c_str());
 	if (configFile.is_open()) {
 		while (!configFile.eof()) {
@@ -73,6 +71,7 @@ void Module::Sim(std::string filename) {
 	}
 	else {
 		std::cout << "[error] Could not read request file." << std::endl;
+		std::cout << fileName << std::endl;
 		exit(1);
 	}
 }
