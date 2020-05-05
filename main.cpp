@@ -1,43 +1,83 @@
 #include<iostream>
 #include"modules/ModuleFactory.h"
 #include<cassert>
-int* ToBinary(uint64_t num, int Nbits) {
-	int* res = new int[Nbits];
-	int idx = Nbits - 1;
-	for (uint64_t n = num; n != 0; n /= 2) {
-		int b = n % 2;
-		res[idx--] = b;
-	}
-	while (idx >= 0) {
-		res[idx--] = 0;
-	}
-	return res;
-}
 
 int main(int argc, char* argv[]) {
 	Config* config = new Config();
 	Parameters* params = new Parameters();
-	RequestQueue* requests = new RequestQueue();
 	Module* module = nullptr;
 
-	//std::string configFileName = "Combine_PW_FNW.txt";
-	std::string configFileName = argv[1];
-	config->Read(configFileName);
-	params->SetParams(config);
-	params->Print();
-	module = ModuleFactory::CreateMoudule(params->writeMode);
-	module->Initialize(params);
-	//std::string fileName = "load_a.txt";
-	std::string fileName = argv[2];
-	std::string requestFileName = Request::TransFormat(fileName, params->N_racetrack, params->NDR);
+	std::string ins = "-r";
+	if (ins == "-t") {
+		std::string fileName = argv[2];
+		std::string trackIdxMaxStr = argv[3];
+		std::string dataIdxMaxStr = argv[4];
 
-	module->Sim(requestFileName);
+		Request::TransFormat(fileName, trackIdxMaxStr, dataIdxMaxStr);
+	}
+	else if (ins == "-r") {
+		std::string configFileName = "Flip_N_Write_4096.txt";
+		std::string resultFileName, paramsFileName;
+		config->Read(configFileName);
+		params->SetParams(config);
+		module = ModuleFactory::CreateMoudule(params->writeMode);
+		module->Initialize(params);
+		std::string requestFileName = "req.txt";
 
-	module->Print();
-	std::string resultFileName = configFileName.substr(0, configFileName.find(".")) + "_result" + configFileName.substr(configFileName.find("."), configFileName.size());
-	module->WriteResultFile(resultFileName);
-	params->CreateParamsFile(configFileName);
+
+		size_t pos = configFileName.find_last_of("/");
+		if (pos != std::string::npos) {
+			resultFileName = configFileName.substr(pos + 1, configFileName.size());
+			paramsFileName = configFileName.substr(pos + 1, configFileName.size());
+		}
+		resultFileName = "./result/" + resultFileName.substr(0, resultFileName.find(".")) + "_Result_" + requestFileName.substr(requestFileName.find("workload_") + 9, 1) + resultFileName.substr(resultFileName.find("."), resultFileName.size());
+		paramsFileName = "./result/" + paramsFileName.substr(0, paramsFileName.find(".")) + "_Params_" + requestFileName.substr(requestFileName.find("workload_") + 9, 1) + paramsFileName.substr(paramsFileName.find("."), paramsFileName.size());
+		
+		module->Sim(requestFileName);
+		module->Print();
+		module->WriteResultFile(resultFileName);
+		params->CreateParamsFile(paramsFileName);
+	}
 	delete config;
 	delete module;
 	return 0;
+	
+	/*Config* config = new Config();
+	Parameters* params = new Parameters();
+	Module* module = nullptr;
+
+	std::string ins = argv[1];
+	if (ins == "-t") {
+		std::string fileName = argv[2];
+		std::string trackIdxMaxStr = argv[3];
+		std::string dataIdxMaxStr = argv[4];
+
+		Request::TransFormat(fileName, trackIdxMaxStr, dataIdxMaxStr);
+	}
+	else if (ins == "-r") {
+		std::string configFileName = argv[2];
+		std::string resultFileName, paramsFileName;
+		config->Read(configFileName);
+		params->SetParams(config);
+		module = ModuleFactory::CreateMoudule(params->writeMode);
+		module->Initialize(params);
+		std::string requestFileName = argv[3];
+
+
+		size_t pos = configFileName.find_last_of("/");
+		if (pos != std::string::npos) {
+			resultFileName = configFileName.substr(pos + 1, configFileName.size());
+			paramsFileName = configFileName.substr(pos + 1, configFileName.size());
+		}
+		resultFileName = "./result/" + resultFileName.substr(0, resultFileName.find(".")) + "_Result_" + requestFileName.substr(requestFileName.find("workload_") + 9, 1) + resultFileName.substr(resultFileName.find("."), resultFileName.size());
+		paramsFileName = "./result/" + paramsFileName.substr(0, paramsFileName.find(".")) + "_Params_" + requestFileName.substr(requestFileName.find("workload_") + 9, 1) + paramsFileName.substr(paramsFileName.find("."), paramsFileName.size());
+
+		module->Sim(requestFileName);
+		module->Print();
+		module->WriteResultFile(resultFileName);
+		params->CreateParamsFile(paramsFileName);
+	}
+	delete config;
+	delete module;
+	return 0;*/
 }

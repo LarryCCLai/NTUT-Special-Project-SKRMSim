@@ -21,13 +21,59 @@ Request::~Request() {
 
 }
 
-std::string Request::TransFormat(std::string inputfileName, int trackIdxMax, int dataIdxMax) {
+std::string Request::TransFormat(std::string inputfileName, std::string trackIdxMaxStr, std::string dataIdxMaxStr) {
+	int trackIdxMax = atoi(trackIdxMaxStr.c_str());
+	int dataIdxMax = atoi(dataIdxMaxStr.c_str());
 	std::string outputfileName;
 	size_t pos = inputfileName.find_last_of("/");
 	if (pos != std::string::npos) {
 		outputfileName = inputfileName.substr(pos + 1, inputfileName.size());
 	}
-	outputfileName = "./requests/requests_" + outputfileName;
+	outputfileName = "./requests/requests_" + outputfileName.substr(0, outputfileName.find(".")) + outputfileName.substr(outputfileName.find("."), outputfileName.size());
+	srand(time(NULL));
+	std::string line;
+	std::string subline;
+	std::ifstream inputFile(inputfileName.c_str());
+	std::ofstream ouputFile(outputfileName.c_str());
+	if (inputFile.is_open() && ouputFile.is_open()) {
+		while (!inputFile.eof()) {
+			getline(inputFile, line);
+			size_t pos = line.find("UPDATE");
+			if (pos == std::string::npos && pos!=0) {
+				continue;
+			}
+			else {
+				std::string goal = "usertable ";
+				pos = line.find(goal);
+				pos += goal.size() + 4;
+				std::string dataStr = "";
+				while (line[pos] != ' ') {
+					dataStr = dataStr + line[pos++];
+				}
+				char* z;
+				uint64_t data = strtoull(dataStr.c_str(), &z, 10);
+				int trackIdx = rand() % trackIdxMax;
+				int dataIdx = rand() % dataIdxMax;
+				ouputFile << "W " << trackIdx << " " << dataIdx << " " << data << std::endl;
+				
+			}
+		}
+	}
+	else {
+		std::cout << "Could not open file." << std::endl;
+		exit(1);
+	}
+	return outputfileName;
+	/*
+	int trackIdxMax = atoi(trackIdxMaxStr.c_str());
+	int dataIdxMax = atoi(dataIdxMaxStr.c_str());
+	std::string outputfileName;
+	size_t pos = inputfileName.find_last_of("/");
+	if (pos != std::string::npos) {
+		outputfileName = inputfileName.substr(pos + 1, inputfileName.size());
+	}
+	
+	outputfileName = "./requests/requests_" + outputfileName.substr(0, outputfileName.find(".")) + "_" + trackIdxMaxStr + "_" + dataIdxMaxStr + outputfileName.substr(outputfileName.find("."), outputfileName.size());
 	srand(time(NULL));
 	std::string line;
 	std::string subline;
@@ -63,7 +109,7 @@ std::string Request::TransFormat(std::string inputfileName, int trackIdxMax, int
 		std::cout << "Could not open file." << std::endl;
 		exit(1);
 	}
-	return outputfileName;
+	return outputfileName;*/
 }
 
 //================================================================

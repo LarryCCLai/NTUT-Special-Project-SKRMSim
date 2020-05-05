@@ -79,14 +79,7 @@ void Parameters::Print() {
 }
 
 void Parameters::CreateParamsFile(std::string fileName) {
-	size_t pos = fileName.find_last_of("/");
-	if (pos != std::string::npos) {
-		fileName = fileName.substr(pos + 1, fileName.size());
-	}
-	std::string filename = "./result/" + fileName.substr(0, fileName.find(".")) + "_Parameters" + fileName.substr(fileName.find("."), fileName.size());
-
-	//std::string filename= fileName.substr(0, fileName.find(".")) + "_Parameters" + fileName.substr(fileName.find("."), fileName.size());
-	std::ofstream file(filename.c_str());
+	std::ofstream file(fileName.c_str());
 	if (file.is_open()) {
 		file << ";***********************************************************************\n" << std::endl;
 		file << ";Number of tracks" << std::endl;

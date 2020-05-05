@@ -6,8 +6,8 @@ public:
 	DCW_Module ();
 	~DCW_Module ();
 	void Initialize(Parameters* params);
-	uint64_t Read(Request* request);
-	void Write(Request* request);
+	uint64_t Read(Request request);
+	void Write(Request request);
 
 };
 

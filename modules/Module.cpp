@@ -12,61 +12,43 @@ void Module::Sim(std::string fileName) {
 	std::string line;
 	std::string subline;
 	std::ifstream configFile(fileName.c_str());
+	int cou = 0;
 	if (configFile.is_open()) {
 		while (!configFile.eof()) {
 			getline(configFile, line);
-			size_t pos = line.find_first_not_of("\t\r\n");
-			if (pos == std::string::npos) {
-				continue;
-			}
-			else if (line[pos] == ';') {
-				continue;
-			}
-			else {
-				size_t colonPos = line.find_first_of(";");
-				if (colonPos == std::string::npos) {
-					subline = line.substr(pos);
-				}
-				else {
-					assert(colonPos > pos);
-					subline = line.substr(pos, colonPos - pos);
-				}
-			}
+			size_t pos;
 			std::string operation;
 			int trackIdx;
 			int dataIdx;
 			uint64_t data;
 
-
-
 			std::string::size_type sz = 0;
-			pos = subline.find(" ");
+			pos = line.find(" ");
 			assert(pos != std::string::npos);
-			operation = subline.substr(0, pos);
-			subline = subline.substr(pos + 1, subline.size());
+			operation = line.substr(0, pos);
+			line = line.substr(pos + 1, line.size());
 
-			pos = subline.find(" ");
+			pos = line.find(" ");
 			assert(pos != std::string::npos);
-			trackIdx = std::stoull(subline.substr(0, pos), &sz, 0);
-			subline = subline.substr(sz + 1);
+			trackIdx = std::stoull(line.substr(0, pos), &sz, 0);
+			line = line.substr(sz + 1);
 
-			pos = subline.find(" ");
+			pos = line.find(" ");
 			assert(pos != std::string::npos);
-			dataIdx = std::stoi(subline.substr(0, pos), &sz, 0);
-			subline = subline.substr(sz + 1);
+			dataIdx = std::stoi(line.substr(0, pos), &sz, 0);
+			line = line.substr(sz + 1);
 
-			pos = subline.find(" ");
+			pos = line.find(" ");
 			assert(pos == std::string::npos);
-			data = std::stoull(subline.substr(0, pos), &sz, 0);
-
-			Request* request = new Request(operation, trackIdx, dataIdx, data);
-			if (request->operation == "W") {
+			data = std::stoull(line.substr(0, pos), &sz, 0);
+			Request request(operation, trackIdx, dataIdx, data);
+			if (request.operation == "W") {
 				this->Write(request);
 			}
 			else {
 				std::cout << this->Read(request);
 			}
-			delete request;
+			cou++;
 		}
 	}
 	else {
@@ -84,13 +66,7 @@ void Module::Print() {
 }
 
 void Module::WriteResultFile(std::string fileName) {
-	size_t pos = fileName.find_last_of("/");
-	if (pos != std::string::npos) {
-		fileName = fileName.substr(pos + 1, fileName.size());
-	}
-	std::string resultFileName = "./result/" + fileName.substr(0, fileName.find(".")) + "_result" + fileName.substr(fileName.find("."), fileName.size());
-
-	std::ofstream file(resultFileName.c_str());
+	std::ofstream file(fileName.c_str());
 	if (file.is_open()) {
 		file << "Shift " << this->shift << std::endl;
 		file << "Detect " << this->detect << std::endl;
