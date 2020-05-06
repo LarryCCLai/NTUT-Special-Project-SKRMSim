@@ -9,7 +9,7 @@ public:
 	void Initialize(Parameters* params);
 	uint64_t Read(Request* request);
 	void Write(Request* request);
-
+	void Sim(std::string fileName);
 };
 
 #endif // PERMUTATIONWRITE_MODULE_H

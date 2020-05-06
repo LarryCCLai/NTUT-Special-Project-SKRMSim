@@ -7,21 +7,17 @@ Parameters::Parameters() {
 	M_N_Table.insert(std::pair<int, std::pair<int, int>>(16, std::pair<int, int>(19, 8)));
 	M_N_Table.insert(std::pair<int, std::pair<int, int>>(32, std::pair<int, int>(35, 17)));
 	M_N_Table.insert(std::pair<int, std::pair<int, int>>(64, std::pair<int, int>(68, 31)));
-	
 	this->dataWidth = 64;
 	this->dataWidthSegment = 16;
 	this->writeMode = WriteMode::M_Out_Of_N_Write;
 	this->NDR = 1;
-	
+	this->RealWrite = false;
 	this->N_DataSegment = this->dataWidth / this->dataWidthSegment;
-	this->N_dataSegmentR = this->NDR * this->N_DataSegment;
 	this->dataSegmentLength = M_N_Table[dataWidthSegment].first;
 	this->N_onesDataSegment = M_N_Table[dataWidthSegment].second;
-	
 	this->NSDR = dataSegmentLength;
-	this->NPR = N_dataSegmentR;
+	this->NPR = this->NDR * this->N_DataSegment;
 	this->racetrackLength = this->NDR * this->N_DataSegment * this->dataSegmentLength + this->NSDR;
-	
 }
 
 void Parameters::SetParams(Config* c) {
@@ -30,16 +26,16 @@ void Parameters::SetParams(Config* c) {
 	c->GetValue("NDR", this->NDR);
 	c->GetValue("N_racetrack", this->N_racetrack);
 	c->GetMode("writeMode", this->writeMode);
-	
+	c->GetBool("RealWrite",this->RealWrite);
 	if (this->writeMode == WriteMode::M_Out_Of_N_Write) {
 		this->dataSegmentLength = M_N_Table[dataWidthSegment].first;
 		this->N_onesDataSegment = M_N_Table[dataWidthSegment].second;
 	}
-	else if (this->writeMode == WriteMode::Flip_N_Write || this->writeMode == WriteMode::Combine_PW_FNW) {
+	else if (this->writeMode == WriteMode::Flip_N_Write || this->writeMode == WriteMode::Combine_PW_FNW || this->writeMode == WriteMode::Permutation_Write) {
 		this->dataSegmentLength = dataWidthSegment + 1;
 		this->N_onesDataSegment = NULL;
 	}
-	else if (this->writeMode == WriteMode::Naive || this->writeMode == WriteMode::DCW || this->writeMode == WriteMode::Permutation_Write) {
+	else if (this->writeMode == WriteMode::Naive || this->writeMode == WriteMode::DCW) {
 		this->dataSegmentLength = dataWidthSegment;
 		this->N_onesDataSegment = NULL;
 	}
@@ -48,18 +44,19 @@ void Parameters::SetParams(Config* c) {
 		exit(1);
 	}
 
-	
-	
 	this->N_DataSegment = this->dataWidth / this->dataWidthSegment;
-	this->N_dataSegmentR = this->NDR * this->N_DataSegment;
-
+	
 	this->NSDR = dataSegmentLength;
-	this->NPR = (this->writeMode == WriteMode::Permutation_Write)? N_dataSegmentR + 1 : N_dataSegmentR;
+	if (this->writeMode==WriteMode::Permutation_Write || this->writeMode==WriteMode::Combine_PW_FNW) {
+		this->NSDR= dataSegmentLength - 1;
+	}
+
+	this->NPR = this->NDR * this->N_DataSegment;
 
 	this->racetrackLength = this->NDR * this->N_DataSegment * this->dataSegmentLength + this->NSDR;
-	if (this->writeMode == WriteMode::Permutation_Write) {
-		this->racetrackLength = this->racetrackLength + this->NPR;
-	}
+	
+	std::string paramsFileName = "./outputFile/params/"+c->GetFileName()+"."+c->GetFileNameExtension();
+	this->CreateParamsFile(paramsFileName);
 }
 
 
@@ -68,9 +65,9 @@ void Parameters::Print() {
 	std::cout << "dataWidth = " << this->dataWidth << std::endl;
 	std::cout << "dataWidthSegment = " << this->dataWidthSegment << std::endl;
 	std::cout << "NDR = " << this->NDR << std::endl;
+	std::cout << "RealWrite = " << this->RealWrite << std::endl;
 	std::cout << "writeMode = " << this->writeMode << std::endl;
 	std::cout << "N_DataSegment = " << this->N_DataSegment << std::endl;
-	std::cout << "N_dataSegmentR = " << this->N_dataSegmentR << std::endl;
 	std::cout << "dataSegmentLength = " << this->dataSegmentLength << std::endl;
 	std::cout << "N_onesDataSegment = " << this->N_onesDataSegment << std::endl;
 	std::cout << "racetrackLength = " << this->racetrackLength << std::endl;
@@ -94,14 +91,13 @@ void Parameters::CreateParamsFile(std::string fileName) {
 		file << ";Number of data per racetrack" << std::endl;
 		file << "NDR = " << this->NDR << std::endl;
 		file << "\n";
+		std::cout << "RealWrite = " << this->RealWrite << std::endl;
+		file << "\n";
 		file << ";Write mode" << std::endl;
 		file << "writeMode = " << this->writeMode << std::endl;
 		file << "\n";
 		file << ";Number of data segments per data: dataWidth / dataWidthSegment" << std::endl;
 		file << "N_DataSegment = " << this->N_DataSegment << std::endl;
-		file << "\n";
-		file << ";Number of data segment per racetrack: NDR * N_DataSegment" << std::endl;
-		file << "N_dataSegmentR = " << this->N_dataSegmentR << std::endl;
 		file << "\n";
 		file << ";dataSegmentLength: n (m-out-of-n), dataWidthSegment + 1 (flip-N-write) or dataWidthSegment (the others)" << std::endl;
 		file << "dataSegmentLength = " << this->dataSegmentLength << std::endl;

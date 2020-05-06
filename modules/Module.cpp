@@ -1,9 +1,4 @@
-#include<iostream>
-#include<cmath>
-#include<cassert>
-
 #include"Module.h"
-
 
 Module::Module() {
 }
@@ -41,8 +36,9 @@ void Module::Sim(std::string fileName) {
 			pos = line.find(" ");
 			assert(pos == std::string::npos);
 			data = std::stoull(line.substr(0, pos), &sz, 0);
-			Request request(operation, trackIdx, dataIdx, data);
-			if (request.operation == "W") {
+
+			Request* request = new Request(operation, trackIdx, dataIdx, data);
+			if (request->operation == "W") {
 				this->Write(request);
 			}
 			else {
@@ -103,6 +99,20 @@ uint64_t Module::ToDecimal(int* num, int Nbits) {
 		}
 	}
 	return res;
+}
+
+
+int Module::CountOnes(uint64_t num){
+	int count = 0;
+	while(num != 0) {
+		count += (num & 1);
+		num >>= 1;
+	}
+	return count;
+}
+
+int Module::Countzeros(uint64_t num){
+	return 64- CountOnes(num); 
 }
 
 uint64_t Module::GetInjection() {

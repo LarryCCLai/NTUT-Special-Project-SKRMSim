@@ -22,14 +22,16 @@ Request::~Request() {
 }
 
 std::string Request::TransFormat(std::string inputfileName, std::string trackIdxMaxStr, std::string dataIdxMaxStr) {
-	int trackIdxMax = atoi(trackIdxMaxStr.c_str());
-	int dataIdxMax = atoi(dataIdxMaxStr.c_str());
 	std::string outputfileName;
+	
 	size_t pos = inputfileName.find_last_of("/");
 	if (pos != std::string::npos) {
-		outputfileName = inputfileName.substr(pos + 1, inputfileName.size());
+		outputfileName = inputfileName.substr(pos+1, inputfileName.size());
 	}
-	outputfileName = "./requests/requests_" + outputfileName.substr(0, outputfileName.find(".")) + outputfileName.substr(outputfileName.find("."), outputfileName.size());
+	outputfileName = "./requests/requestFiles/" + outputfileName.substr(0,outputfileName.find("."))+"_"+trackIdxMaxStr+"_"+dataIdxMaxStr+outputfileName.substr(outputfileName.find("."),outputfileName.size());
+
+	int trackIdxMax = atoi(trackIdxMaxStr.c_str());
+	int dataIdxMax = atoi(dataIdxMaxStr.c_str());
 	srand(time(NULL));
 	std::string line;
 	std::string subline;
@@ -39,7 +41,7 @@ std::string Request::TransFormat(std::string inputfileName, std::string trackIdx
 		while (!inputFile.eof()) {
 			getline(inputFile, line);
 			size_t pos = line.find("UPDATE");
-			if (pos == std::string::npos && pos!=0) {
+			if (pos == std::string::npos || pos != 0) {
 				continue;
 			}
 			else {
@@ -55,7 +57,6 @@ std::string Request::TransFormat(std::string inputfileName, std::string trackIdx
 				int trackIdx = rand() % trackIdxMax;
 				int dataIdx = rand() % dataIdxMax;
 				ouputFile << "W " << trackIdx << " " << dataIdx << " " << data << std::endl;
-				
 			}
 		}
 	}
@@ -111,7 +112,7 @@ std::string Request::TransFormat(std::string inputfileName, std::string trackIdx
 	}
 	return outputfileName;*/
 }
-
+//Use yet.
 //================================================================
 RequestQueue::RequestQueue() {
 
@@ -204,3 +205,4 @@ void RequestQueue::getNextRequest(Request** request) {
 		*request = nullptr;
 	}
 }
+//================

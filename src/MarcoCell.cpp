@@ -25,18 +25,18 @@ void MarcoCell::Initialize(Parameters* p) {
 		this->NDR = p->NDR;
 		this->NPR = p->NPR;
 		this->NSDR = p->NSDR;
-		this->bits = new int[this->racetrackLength];
+		this->bits = new int[p->racetrackLength];
 		this->ports = new AccessPort[this->NPR];
 		int interval = 0;
 		int count = 0;
-		if (p->writeMode == WriteMode::Permutation_Write) {
+		/*if (p->writeMode == WriteMode::Permutation_Write) {
 			interval = p->dataWidthSegment + 1;
 			count = 0;
 		}
-		else {
+		else {*/
 			interval = (this->racetrackLength - this->NSDR) / this->NPR;
 			count = interval - 1;
-		}
+		//}
 		for (int i = 0; i < this->NPR; i++) {
 			this->ports[i].setAlign(count);
 			count += interval;

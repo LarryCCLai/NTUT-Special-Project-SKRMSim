@@ -1,0 +1,3 @@
+/outputFile/*/*.txt
+/requests/requestFiles/*.txt
+/ycsb_workloads/*.txt

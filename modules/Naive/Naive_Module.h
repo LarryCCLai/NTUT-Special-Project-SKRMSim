@@ -6,9 +6,9 @@ public:
 	Naive_Module();
 	~Naive_Module();
 	void Initialize(Parameters* params);
-	uint64_t Read(Request request);
-	void Write(Request request);
-
+	uint64_t Read(Request* request);
+	void Write(Request* request);
+	void Sim(std::string fileName);
 };
 
 #endif // !NAIVE_MODULE_H

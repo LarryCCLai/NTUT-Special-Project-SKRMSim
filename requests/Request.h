@@ -18,6 +18,8 @@ public:
 	~Request ();
 };
 
+//Ues yet 
+//================
 class RequestQueue {
 private:
 	std::string fileName;
@@ -31,5 +33,6 @@ public:
 	Request* getNextRequest();
 	void getNextRequest(Request** request);
 };
+//================
 #endif // !REQUEST_H
 

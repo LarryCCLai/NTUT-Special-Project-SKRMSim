@@ -20,6 +20,7 @@ enum WriteMode {
 class Config {
 private:
 	std::string fileName;
+	std::string fileNameExtension;
 	std::map<std::string, std::string> values;
 	std::set<std::string> warned;
 	//std::ofstream debugLogFile;
@@ -29,7 +30,7 @@ public:
 	~Config() {};
 	void Read(std::string filename);
 	std::string GetFileName();
-
+	std::string GetFileNameExtension();
 	bool KeyExists(std::string key);
 
 	uint64_t GetValueUL(std::string key);
@@ -42,6 +43,8 @@ public:
 	std::string GetString(std::string key);
 	void  GetString(std::string key, std::string& value);
 	void  SetString(std::string key, std::string);
+
+	void GetBool(std::string key, bool& value);
 
 	void GetMode(std::string key, WriteMode& value);
 

@@ -7,77 +7,44 @@ int main(int argc, char* argv[]) {
 	Parameters* params = new Parameters();
 	Module* module = nullptr;
 
-	std::string ins = "-r";
-	if (ins == "-t") {
-		std::string fileName = argv[2];
-		std::string trackIdxMaxStr = argv[3];
-		std::string dataIdxMaxStr = argv[4];
-
-		Request::TransFormat(fileName, trackIdxMaxStr, dataIdxMaxStr);
-	}
-	else if (ins == "-r") {
-		std::string configFileName = "Flip_N_Write_4096.txt";
-		std::string resultFileName, paramsFileName;
-		config->Read(configFileName);
-		params->SetParams(config);
-		module = ModuleFactory::CreateMoudule(params->writeMode);
-		module->Initialize(params);
-		std::string requestFileName = "req.txt";
-
-
-		size_t pos = configFileName.find_last_of("/");
-		if (pos != std::string::npos) {
-			resultFileName = configFileName.substr(pos + 1, configFileName.size());
-			paramsFileName = configFileName.substr(pos + 1, configFileName.size());
-		}
-		resultFileName = "./result/" + resultFileName.substr(0, resultFileName.find(".")) + "_Result_" + requestFileName.substr(requestFileName.find("workload_") + 9, 1) + resultFileName.substr(resultFileName.find("."), resultFileName.size());
-		paramsFileName = "./result/" + paramsFileName.substr(0, paramsFileName.find(".")) + "_Params_" + requestFileName.substr(requestFileName.find("workload_") + 9, 1) + paramsFileName.substr(paramsFileName.find("."), paramsFileName.size());
-		
-		module->Sim(requestFileName);
-		module->Print();
-		module->WriteResultFile(resultFileName);
-		params->CreateParamsFile(paramsFileName);
-	}
-	delete config;
-	delete module;
-	return 0;
-	
-	/*Config* config = new Config();
-	Parameters* params = new Parameters();
-	Module* module = nullptr;
-
 	std::string ins = argv[1];
 	if (ins == "-t") {
 		std::string fileName = argv[2];
-		std::string trackIdxMaxStr = argv[3];
-		std::string dataIdxMaxStr = argv[4];
+		std::string trackIdxMax = argv[3];
+		std::string dataIdxMax = argv[4];
 
-		Request::TransFormat(fileName, trackIdxMaxStr, dataIdxMaxStr);
+		
+		Request::TransFormat(fileName, trackIdxMax, dataIdxMax);
 	}
 	else if (ins == "-r") {
 		std::string configFileName = argv[2];
-		std::string resultFileName, paramsFileName;
+		std::string requestFileName = argv[3];
 		config->Read(configFileName);
 		params->SetParams(config);
+		params->Print();
 		module = ModuleFactory::CreateMoudule(params->writeMode);
 		module->Initialize(params);
-		std::string requestFileName = argv[3];
-
-
-		size_t pos = configFileName.find_last_of("/");
-		if (pos != std::string::npos) {
-			resultFileName = configFileName.substr(pos + 1, configFileName.size());
-			paramsFileName = configFileName.substr(pos + 1, configFileName.size());
-		}
-		resultFileName = "./result/" + resultFileName.substr(0, resultFileName.find(".")) + "_Result_" + requestFileName.substr(requestFileName.find("workload_") + 9, 1) + resultFileName.substr(resultFileName.find("."), resultFileName.size());
-		paramsFileName = "./result/" + paramsFileName.substr(0, paramsFileName.find(".")) + "_Params_" + requestFileName.substr(requestFileName.find("workload_") + 9, 1) + paramsFileName.substr(paramsFileName.find("."), paramsFileName.size());
-
 		module->Sim(requestFileName);
 		module->Print();
+		size_t pos; 
+		std::string postfix;
+		pos = requestFileName.find("uniform");
+		if (pos != std::string::npos) {
+			postfix = requestFileName.substr(pos,11);
+		}
+		else {
+			pos = requestFileName.find("zipf");
+			if (pos != std::string::npos) {
+				postfix = requestFileName.substr(pos,8);
+			}
+			else{
+				std::cout << "[error] main.cpp, requestFile Name" << std::endl;
+				exit(1);
+			}
+		}
+		std::string resultFileName = "./outputFile/results/"+config->GetFileName()+"_"+postfix+"."+config->GetFileNameExtension();
+		std::cout<<resultFileName<<std::endl;
 		module->WriteResultFile(resultFileName);
-		params->CreateParamsFile(paramsFileName);
 	}
-	delete config;
-	delete module;
-	return 0;*/
+	return 0;
 }

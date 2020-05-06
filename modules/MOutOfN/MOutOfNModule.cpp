@@ -8,10 +8,16 @@ M_Out_Of_N_Module::M_Out_Of_N_Module() {
 	this->remove = 0;
 	this->shift = 0;
 	this->detect = 0;
-
 	this->initialized = false;
 	this->track = nullptr;
 	this->params = nullptr;
+	this->datas = nullptr;
+}
+
+M_Out_Of_N_Module::~M_Out_Of_N_Module() {
+	delete[]track;
+	delete params;
+	delete[]datas;
 }
 
 void M_Out_Of_N_Module::Initialize(Parameters* params) {
@@ -27,14 +33,13 @@ void M_Out_Of_N_Module::Initialize(Parameters* params) {
 				}
 			}
 		}
+		this->datas = new uint64_t[params->NDR];
+		for(int i = 0; i < params->NDR; i++){
+			this->datas[i] = 0;
+		}
 		this->GenerateEncodeAndDecodeTable();
 		this->initialized = true;
 	}
-}
-
-M_Out_Of_N_Module::~M_Out_Of_N_Module() {
-	delete[]track;
-	delete params;
 }
 
 uint64_t M_Out_Of_N_Module::Read(Request* request) {
@@ -92,6 +97,66 @@ void M_Out_Of_N_Module::Write(Request* request) {
 			MOutOfNCode = MOutOfNCode >> 1;
 		}
 		sampling = sampling << params->dataWidthSegment;
+	}
+}
+
+void M_Out_Of_N_Module::Sim(std::string fileName){
+	std::string line;
+	std::string subline;
+	std::string operation;
+	uint64_t preData = NULL;
+	uint64_t curData = NULL;
+	int curDataIdx = NULL;
+	int curTrackIdx = NULL;
+	
+	std::ifstream configFile(fileName.c_str());
+	if (configFile.is_open()) {
+		while (!configFile.eof()) {
+			getline(configFile, line);
+			size_t pos;
+			if(line[0]!='W' && line[0]!='R'){
+				continue;
+			}
+			std::string::size_type sz = 0;
+			pos = line.find(" ");
+			assert(pos != std::string::npos);
+			operation = line.substr(0, pos);
+			line = line.substr(pos + 1, line.size());
+
+			pos = line.find(" ");
+			assert(pos != std::string::npos);
+			curTrackIdx = std::stoull(line.substr(0, pos), &sz, 0);
+			line = line.substr(sz + 1);
+
+			pos = line.find(" ");
+			assert(pos != std::string::npos);
+			curDataIdx = std::stoi(line.substr(0, pos), &sz, 0);
+			line = line.substr(sz + 1);
+
+			pos = line.find(" ");
+			assert(pos == std::string::npos);
+			curData = std::stoull(line.substr(0, pos), &sz, 0);
+
+			if(!params->RealWrite){ 
+				this->shift += this->params->dataSegmentLength * this->params->N_DataSegment;
+				this->detect += this->params->dataSegmentLength* this->params->N_DataSegment;
+				this->shift += this->params->dataSegmentLength * this->params->N_DataSegment;
+			}
+			else {
+				Request* request = new Request(operation, curTrackIdx, curDataIdx, curData);
+				if (request->operation == "W") {
+					this->Write(request);
+				}
+				else {
+					std::cout << this->Read(request);
+				}
+			}
+		}
+	}
+	else {
+		std::cout << "[error] Could not read request file." << std::endl;
+		std::cout << fileName << std::endl;
+		exit(1);
 	}
 }
 

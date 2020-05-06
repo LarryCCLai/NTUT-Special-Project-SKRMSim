@@ -3,15 +3,25 @@
 #include<iostream>
 #include<limits>
 void Config::Read(std::string fileName) {
+	
+	size_t pos; 
+	this->fileName = fileName;
+	pos	= this->fileName.find_last_of("/");
+	if (pos != std::string::npos) {
+		this->fileName = this->fileName.substr(pos+1,this->fileName.size());
+	}
+	this->fileNameExtension = this->fileName.substr(this->fileName.find('.')+1,this->fileName.size());
+	this->fileName = this->fileName.substr(0,this->fileName.find('.'));
+
 	std::string line;
 	std::string subline;
 	std::ifstream configFile(fileName.c_str());
-	this->fileName = fileName;
+
 	if (configFile.is_open()) {
 		while (!configFile.eof()) {
 			getline(configFile, line);
 			/* find the first character that is not space, tab, return */
-			size_t pos = line.find_first_not_of("\t\r\n");
+			pos = line.find_first_not_of("\t\r\n");
 			/* if not found, the line is empty. just skip it */
 			if (pos == std::string::npos) {
 				continue;
@@ -50,7 +60,9 @@ void Config::Read(std::string fileName) {
 std::string Config::GetFileName() {
 	return this->fileName;
 }
-
+std::string Config::GetFileNameExtension(){
+	return this->fileNameExtension;
+}
 bool Config::KeyExists(std::string key) {
 	std::map<std::string, std::string>::iterator idx;
 
@@ -202,6 +214,29 @@ void  Config::GetString(std::string key, std::string& value) {
 
 void  Config::SetString(std::string key, std::string value) {
 	values.insert(std::pair<std::string, std::string>(key, value));
+}
+
+void Config::GetBool(std::string key, bool& value){
+	std::map<std::string, std::string>::iterator idx;
+	if (values.empty()) {
+		std::cerr << "Configuration has not been read yet." << std::endl;
+		exit(1);
+	}
+	idx = values.find(key);
+
+	if (!KeyExists(key) && !warned.count(key)) {
+		std::cout << "Config: Warning: Key [" << key << "] is not set. Using 'false' as the default. Please configure this value if this is wrong." << std::endl;
+		warned.insert(key);
+		value=false;
+	}
+	else{
+		if(idx->second=="true"){
+			value = true;
+		}
+		else{
+			value = false;
+		}
+	}
 }
 
 void  Config::GetMode(std::string key, WriteMode& value) {
