@@ -1,3 +1,5 @@
 /outputFile/*/*.txt
+/outputFile/*/*.csv
 /requests/requestFiles/*.txt
 /ycsb_workloads/*.txt
+/debug/*/*

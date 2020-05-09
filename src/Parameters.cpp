@@ -91,7 +91,8 @@ void Parameters::CreateParamsFile(std::string fileName) {
 		file << ";Number of data per racetrack" << std::endl;
 		file << "NDR = " << this->NDR << std::endl;
 		file << "\n";
-		std::cout << "RealWrite = " << this->RealWrite << std::endl;
+		file << ";Real Write, Defult: false" << std::endl;
+		file << "RealWrite = " << this->RealWrite << std::endl;
 		file << "\n";
 		file << ";Write mode" << std::endl;
 		file << "writeMode = " << this->writeMode << std::endl;

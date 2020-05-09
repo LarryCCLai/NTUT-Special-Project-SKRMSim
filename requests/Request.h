@@ -11,7 +11,6 @@ public:
 	uint64_t trackIdx;
 	int dataIdx;
 	uint64_t data;
-	static std::string TransFormat(std::string inputfileName, std::string trackIdxMaxStr, std::string dataIdxMaxStr);
 	
 	Request();
 	Request(std::string operation, int trackIdx, int dataIdx, uint64_t data);
