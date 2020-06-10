@@ -56,9 +56,15 @@ NDR 8 16 32 64
 The results export to the dir `SK-RMSim\outputFile`
 
 # Others
+**test**
 ```
+sudo apt install default-jre
+sudo apt install curl
+curl -O --location https://github.com/brianfrankcooper/YCSB/releases/download/0.17.0/ycsb-0.17.0.tar.gz
+tar xfvz ycsb-0.17.0.tar.gz
+sudo apt install git
 git clone https://github.com/LarryLai-desl/SK-RMSim.git
-[cd to dir SK-RMSim\]
+cd SK-RMSim
 make
 bash load_Workloads.sh
 bash exe.sh
