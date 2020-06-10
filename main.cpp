@@ -7,7 +7,7 @@ int main(int argc, char* argv[]) {
 	Config* config = new Config();
 	Parameters* params = new Parameters();
 	Module* module = nullptr;
-
+	
 	std::string ins = argv[1];
 	if (ins == "-t") {
 		std::string fileName = argv[2];

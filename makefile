@@ -1,4 +1,5 @@
 .PHONY:clean all
+
 CC = g++
 #ls -l 
 #grep ^d: search dirs
@@ -20,7 +21,11 @@ CUR_OBJS=${patsubst %.cpp, %.o, $(CUR_SOURCE)}
 #share variables to makefile of sub dir 
 export CC BIN OBJS_DIR BIN_DIR ROOT_DIR
 
-all: $(SUBDIRS) $(CUR_OBJS) DEBUG
+all: $(OBJS_DIR) $(BIN_DIR) $(SUBDIRS) $(CUR_OBJS) DEBUG
+$(OBJS_DIR):
+	mkdir -p $(OBJS_DIR)
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
 #Recursively run makefile of sub dir
 $(SUBDIRS): ECHO
 	make -C $@

@@ -128,7 +128,7 @@ int  Config::GetValue(std::string key) {
 	int value;
 	if (values.empty()) {
 		std::cerr << "Configuration has not been read yet." << std::endl;
-		return std::numeric_limits<uint64_t>::max();
+		return std::numeric_limits<int>::max();
 	}
 	idx = values.find(key);
 
@@ -138,7 +138,7 @@ int  Config::GetValue(std::string key) {
 	}
 
 	if (idx == values.end()) {
-		value = std::numeric_limits<uint64_t>::max();
+		value = std::numeric_limits<int>::max();
 	}
 	else {
 		value = strtoul(idx->second.c_str(), NULL, 10);
@@ -150,7 +150,7 @@ void Config::GetValue(std::string key, int& value) {
 	std::map<std::string, std::string>::iterator idx;
 	if (values.empty()) {
 		std::cerr << "Configuration has not been read yet." << std::endl;
-		value = std::numeric_limits<uint64_t>::max();
+		value = std::numeric_limits<int>::max();
 	}
 	idx = values.find(key);
 
@@ -160,7 +160,7 @@ void Config::GetValue(std::string key, int& value) {
 	}
 
 	if (idx == values.end()) {
-		value = std::numeric_limits<uint64_t>::max();
+		value = std::numeric_limits<int>::max();
 	}
 	else {
 		value = strtoul(idx->second.c_str(), NULL, 10);
@@ -253,7 +253,7 @@ void  Config::GetMode(std::string key, WriteMode& value) {
 	}
 
 	if (idx == values.end()) {
-		V = std::numeric_limits<uint64_t>::max();
+		V = std::numeric_limits<int>::max();
 	}
 	else {
 		V = strtoul(idx->second.c_str(), NULL, 10);

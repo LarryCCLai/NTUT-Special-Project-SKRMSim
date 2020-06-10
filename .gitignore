@@ -3,3 +3,4 @@
 /requests/requestFiles/*.txt
 /ycsb_workloads/*.txt
 /debug/*/*
+/.vscode/*

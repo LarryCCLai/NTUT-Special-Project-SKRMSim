@@ -2,7 +2,7 @@
 #include<iostream>
 #include<vector>
 #include<fstream>
-
+#include <iomanip>
 std::string Generator::GenerateRequestFile(std::string inputfileName, std::string trackIdxMaxStr, std::string dataIdxMaxStr) {
 	std::string outputfileName;
 	
@@ -48,7 +48,7 @@ std::string Generator::GenerateRequestFile(std::string inputfileName, std::strin
 	}
 	return outputfileName;
 }
-
+/*
 void Generator::GenerateInformation(){
     std::fstream outFile;
 
@@ -56,9 +56,7 @@ void Generator::GenerateInformation(){
     Distribution.push_back("uniform");
     Distribution.push_back("zipf");
     std::vector<std::string> dataN;
-    dataN.push_back("1E5");
     dataN.push_back("1E6");
-    dataN.push_back("1E7");
     std::vector<std::string> length;
     length.push_back("512");
     length.push_back("1024");
@@ -70,8 +68,6 @@ void Generator::GenerateInformation(){
     MoudleName.push_back("Flip_N_Write");
     MoudleName.push_back("MOutOfNWrite_8");
     MoudleName.push_back("MOutOfNWrite_16");
-    MoudleName.push_back("Permutation_Write");
-    MoudleName.push_back("Combine_PW_FNW");
 
     for(int i = 0; i < Distribution.size(); i++){
         for(int j = 0; j < dataN.size(); j++){
@@ -149,6 +145,108 @@ void Generator::GenerateInformation(){
                 outFile << "\n\n";
             }
             outFile.close();
+        }    
+    }
+}
+*/
+
+void Generator::GenerateInformation(){
+    std::fstream outFile;
+
+    std::vector<std::string> Distribution;
+    Distribution.push_back("uniform");
+    Distribution.push_back("zipf");
+    std::vector<std::string> dataN;
+    dataN.push_back("1E6");
+    std::vector<std::string> length;
+    length.push_back("512");
+    length.push_back("1024");
+    length.push_back("2048");
+    length.push_back("4096");
+    std::vector<std::string> MoudleName;
+    MoudleName.push_back("Naive");
+    MoudleName.push_back("DCW");
+    MoudleName.push_back("Flip_N_Write");
+    MoudleName.push_back("MOutOfNWrite_8");
+    MoudleName.push_back("MOutOfNWrite_16");
+    std::vector<std::vector<int>> overheadRes;
+    std::vector<std::vector<double>> latencyRes;
+    for(int i = 0; i < Distribution.size(); i++){
+        for(int j = 0; j < dataN.size(); j++){
+            for(int k = 0; k < length.size(); k++){
+
+                std::vector<std::vector<std::string>> moudlesOpsRes(5);
+                moudlesOpsRes[0].push_back("Shift");
+                moudlesOpsRes[0].push_back("Detection");
+                moudlesOpsRes[0].push_back("Delete");
+                moudlesOpsRes[0].push_back("Insert");
+                for(int m = 0; m < MoudleName.size(); m++){
+                    std::string inResultFileName = "outputFile/results/" + MoudleName[m] + "_" + length[k] + "_" + Distribution[i] + "_" + dataN[j] + ".txt";
+                    std::string inParamsFileName = "outputFile/params/" + MoudleName[m] + "_" + length[k] + ".txt";
+                    std::ifstream inResultFile(inResultFileName.c_str());
+                    std::ifstream inParamsFile(inParamsFileName.c_str());
+                    std::string line;
+                    
+                    size_t pos;
+                    double weight[4]={0.5, 0.1, 0.8, 1.0};
+                    double time = 0;
+                    int tracklength = 0;
+                    int NSDR=0;
+                    if(inResultFile.is_open()){
+                        for(int i = 0; i < 4; i++){
+                            getline(inResultFile, line);
+                            pos = line.find(" ");
+                            line = line.substr(pos + 1, line.size());
+                            moudlesOpsRes[m].push_back(line);
+                            time += (atof(line.c_str())*weight[i]);
+                        }
+                    }
+                    else{
+                        std::cout<< "Could not open input file = \" "<< inResultFileName << " \"" << std::endl;
+                        exit(1);
+                    }
+
+                    if(inParamsFile.is_open()){
+                        while(!inParamsFile.eof()){
+
+                            getline(inParamsFile, line);
+                            std::string f = "racetrackLength = ";
+                            
+                            pos = line.find(f);
+                            if(pos != std::string::npos) {
+                                line = line.substr(pos + f.size(), line.size());
+                                tracklength = atoi(line.c_str());
+                            }
+                            f = "NSDR = ";
+                            pos = line.find(f);
+                            if(pos != std::string::npos) {
+                                line = line.substr(pos + f.size(), line.size());
+                                NSDR = atoi(line.c_str());
+                                
+                            }
+                        }
+                        overheadRes[m].push_back(tracklength);
+                    }
+                    else {
+                        std::cout<< "Could not open input file = \" "<< inParamsFileName << " \"" << std::endl;
+                            exit(1);
+                    }    
+
+                    latencyRes[m].push_back(time);
+                    //outFile.precision (10);
+                    //outFile << std::dec << time << std::endl; 
+                    inResultFile.close();
+                    inParamsFile.close();
+                }
+                std::string outFileName = "outputFile/information/" + Distribution[i] + "_" + length[k] + ".txt" ;
+                outFile.open(outFileName, std::ios::out);  
+                for(int x = 0;x < 4;x++){
+                    for(int y = 0; y < moudlesOpsRes.size(); y++){
+                        outFile <<std::setw(10)<< moudlesOpsRes[y][x];
+                    }
+                }  
+                outFile.close();
+            }
         }    
     }
 }
