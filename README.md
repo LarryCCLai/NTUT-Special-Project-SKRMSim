@@ -60,10 +60,12 @@ The results export to the dir `SK-RMSim\outputFile`
 ```
 sudo apt install default-jre
 sudo apt install curl
+sudo apt install gnuplot
+sudo apt install git
+
 curl -O --location https://github.com/brianfrankcooper/YCSB/releases/download/0.17.0/ycsb-0.17.0.tar.gz
 tar xfvz ycsb-0.17.0.tar.gz
-sudo apt install git
-git clone https://github.com/LarryLai-desl/SK-RMSim.git
+git clone https://github.com/LarryCCLai/SK-RMSim.git
 cd SK-RMSim
 make
 bash load_Workloads.sh
