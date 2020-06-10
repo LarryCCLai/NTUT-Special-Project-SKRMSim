@@ -169,13 +169,16 @@ void Generator::GenerateInformation(){
     MoudleName.push_back("Flip_N_Write");
     MoudleName.push_back("MOutOfNWrite_8");
     MoudleName.push_back("MOutOfNWrite_16");
-    std::vector<std::vector<int>> overheadRes;
-    std::vector<std::vector<double>> latencyRes;
+
+    std::vector<std::vector<int>> overheadRes(5);
+    std::vector<std::vector<double>> latencyRes(5);
+
+
     for(int i = 0; i < Distribution.size(); i++){
         for(int j = 0; j < dataN.size(); j++){
             for(int k = 0; k < length.size(); k++){
 
-                std::vector<std::vector<std::string>> moudlesOpsRes(5);
+                std::vector<std::vector<std::string>> moudlesOpsRes(6);
                 moudlesOpsRes[0].push_back("Shift");
                 moudlesOpsRes[0].push_back("Detection");
                 moudlesOpsRes[0].push_back("Delete");
@@ -197,7 +200,7 @@ void Generator::GenerateInformation(){
                             getline(inResultFile, line);
                             pos = line.find(" ");
                             line = line.substr(pos + 1, line.size());
-                            moudlesOpsRes[m].push_back(line);
+                            moudlesOpsRes[m+1].push_back(line);
                             time += (atof(line.c_str())*weight[i]);
                         }
                     }
@@ -208,10 +211,8 @@ void Generator::GenerateInformation(){
 
                     if(inParamsFile.is_open()){
                         while(!inParamsFile.eof()){
-
                             getline(inParamsFile, line);
                             std::string f = "racetrackLength = ";
-                            
                             pos = line.find(f);
                             if(pos != std::string::npos) {
                                 line = line.substr(pos + f.size(), line.size());
@@ -225,28 +226,59 @@ void Generator::GenerateInformation(){
                                 
                             }
                         }
-                        overheadRes[m].push_back(tracklength);
+                        int original = atoi(length[k].c_str());
+                        overheadRes[m].push_back(tracklength-original);
                     }
                     else {
                         std::cout<< "Could not open input file = \" "<< inParamsFileName << " \"" << std::endl;
                             exit(1);
                     }    
-
                     latencyRes[m].push_back(time);
                     //outFile.precision (10);
                     //outFile << std::dec << time << std::endl; 
                     inResultFile.close();
                     inParamsFile.close();
                 }
+
                 std::string outFileName = "outputFile/information/" + Distribution[i] + "_" + length[k] + ".txt" ;
                 outFile.open(outFileName, std::ios::out);  
+                outFile << std::setw(9) << "Operation" << std::setw(15) << "Naive" << std::setw(15) << "DCW" << std::setw(15) << "FNW" << std::setw(15) << "MoutofN,8" << std::setw(15) << "MoutofN,16" << std::endl;
+
                 for(int x = 0;x < 4;x++){
-                    for(int y = 0; y < moudlesOpsRes.size(); y++){
-                        outFile <<std::setw(10)<< moudlesOpsRes[y][x];
+                    outFile << std::setw(9) << moudlesOpsRes[0][x];
+                    for(int y = 1; y < moudlesOpsRes.size(); y++){
+                        outFile << std::setw(15) << moudlesOpsRes[y][x];
                     }
+                    outFile<<std::endl;
                 }  
                 outFile.close();
+
+
             }
         }    
     }
+    ;
+    outFile.open("outputFile/information/latency(ns).txt", std::ios::out);  
+    outFile << std::setw(14) << "Track capacity" << std::setw(15) << "Naive" << std::setw(15) << "DCW" << std::setw(15) << "FNW" << std::setw(15) << "MoutofN,8" << std::setw(15) << "MoutofN,16" << std::endl;
+    outFile.precision (10);
+    for(int x = 0;x < 4;x++){
+        outFile << std::setw(14) << length[x];
+        for(int y = 0; y < latencyRes.size(); y++){
+            outFile << std::setw(15) << latencyRes[y][x] ;
+        }
+        outFile<<std::endl;
+    }  
+    outFile.close();
+    
+    outFile.open("outputFile/information/overhead.txt", std::ios::out);  
+    outFile << std::setw(14) << "Track capacity" << std::setw(15) << "Naive" << std::setw(15) << "DCW" << std::setw(15) << "FNW" << std::setw(15) << "MoutofN,8" << std::setw(15) << "MoutofN,16" << std::endl;
+
+    for(int x = 0;x < 4;x++){
+        outFile << std::setw(14) << length[x];
+        for(int y = 0; y < overheadRes.size(); y++){
+            outFile << std::setw(15) << overheadRes[y][x] ;
+        }
+        outFile<<std::endl;
+    }  
+    outFile.close();
 }
