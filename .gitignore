@@ -3,3 +3,4 @@
 /ycsb_workloads/*.txt
 /debug/*/*
 /.vscode/*
+/outputFile/graphs/*.png

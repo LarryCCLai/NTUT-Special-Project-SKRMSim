@@ -15,9 +15,9 @@ set style fill solid
 set style histogram clustered gap 4 title offset character 0,0,0
 set boxwidth 1 relative
 
-set output 'Overhead.png'
+set output './outputFile/graphs/Overhead.png'
 
-plot [:][:1700]'../information/overhead.txt' \
+plot [:][:1700]'./outputFile/information/overhead.txt' \
 using 2:xtic(1) with histogram fs p 1 lt rgb "black" title 'Naive', \
 '' using 3:xtic(1) with histogram fs p 2 lt rgb "black" title 'DCW'  , \
 '' using 4:xtic(1) with histogram fs p 4 lt rgb "black" title 'FNW'  , \

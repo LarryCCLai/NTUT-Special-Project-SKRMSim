@@ -225,7 +225,6 @@ void Config::GetBool(std::string key, bool& value){
 	idx = values.find(key);
 
 	if (!KeyExists(key) && !warned.count(key)) {
-		std::cout << "Config: Warning: Key [" << key << "] is not set. Using 'false' as the default. Please configure this value if this is wrong." << std::endl;
 		warned.insert(key);
 		value=false;
 	}

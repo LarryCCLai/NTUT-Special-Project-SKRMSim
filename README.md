@@ -1,20 +1,14 @@
 # How to compile
-1. clone the respository
-2. enter the following commands
+1. Git clone the respository
+2. Enter the following command
 ```
-cd deubg 
-mkdir bin 
-mkdir obj
-cd .. 
 make
 ```
+
 # How to use
-
 1. **Edit config file**  
-***
-
-   * Template
-
+    * Template as shown in following..
+    * Place the config file to the dir SK-RMSim/config/configFile/
 ```
 ;********************************************************************************
 ; Number of racetrack
@@ -44,22 +38,32 @@ writeMode 5
 NDR 8 16 32 64
 ;********************************************************************************
 ```
-   * place config file to the dir ``SK-RMSim/config/configFile/``
-***
 2. **Generate request file**
-***
-  * Method1: Generate request file yourself
-    * request format per line: [operation] [track index] [data index] [data]  
-      * operation: W, R
-      * track index: 0 ~ N-1, where N is based on "Number of racetrack" in config file.
-      * deat index: 0 ~ N-1, where N is based on "Number of data per racetrack" in config file.
-      * data: 0 ~ 2^63
-  * Method2: Use YCSB to generate it
-    * https://github.com/brianfrankcooper/YCSB
-  * place reuest file to the dir ``SK-RMSim/requests/requestFiles/``
-***
+   * **Method1**: Generate request file yourself
+     * request format per line: [operation] [track index] [data index] [data]  
+       * operation: W, R
+       * track index: 0 ~ N-1, where N is based on "Number of racetrack" in config file.
+       * deat index: 0 ~ N-1, where N is based on "Number of data per racetrack" in config file.
+       * data: 0 ~ 2^63
+   * **Method2**: Use YCSB to generate it.  
+     * Note that you have to trans the format adapted to SK-RMSim
+     * https://github.com/brianfrankcooper/YCSB
+   * Place rqeuest file to the dir ``SK-RMSim/requests/requestFiles/``
 3. **Execute command**  
 
-`./debug/bin/simulator -r ./config/configFile/[confige file] ./requests/requestFiles/[request file]`
+    `./debug/bin/simulator -r ./config/configFile/[confige file] ./requests/requestFiles/[request file]`
 # Results
-The result output to the dir `.\outputFile`
+The results export to the dir `SK-RMSim\outputFile`
+
+# Others
+```
+git clone https://github.com/LarryLai-desl/SK-RMSim.git
+[cd to dir SK-RMSim\]
+make
+bash load_Workloads.sh
+bash exe.sh
+./debug/bin/simulator -g
+gnuplot ./print/latency.gp
+gnuplot ./print/overhead.gp
+gnuplot ./print/results.gp
+```
